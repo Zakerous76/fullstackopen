@@ -29,12 +29,31 @@ const App = () => {
     setVotes(newVotes);
   };
 
+  const returnMaxIndex = () => {
+    let maxIndex = 0;
+    let element = votes[maxIndex];
+    for (let index = 0; index < votes.length; index++) {
+      if (votes[index] > votes[maxIndex]) {
+        maxIndex = index;
+      }
+    }
+    return maxIndex;
+  };
+
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <p>This has {votes[selected]}</p>
-      <button onClick={handleNextAnecdote}>Next Anecdote</button>
-      <button onClick={handleVote}>Vote</button>
+      <div>
+        <h2>Anecdote of the Day</h2>
+        <p>{anecdotes[selected]}</p>
+        <p>This has {votes[selected]}</p>
+        <button onClick={handleNextAnecdote}>Next Anecdote</button>
+        <button onClick={handleVote}>Vote</button>
+      </div>
+      <div>
+        <h2>Anecdote with the most number of Votes</h2>
+        <p>{anecdotes[returnMaxIndex()]}</p>
+        <p>This has {votes[returnMaxIndex()]}</p>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,15 @@
 import { useState } from "react";
 
 const Statistics = (props) => {
+  if (props.val1 === 0 && props.val2 === 0 && props.val3 === 0) {
+    return (
+      <div>
+        <h1>{props.title}</h1>
+        <p>No statistics have been given yet</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h1>{props.title}</h1>

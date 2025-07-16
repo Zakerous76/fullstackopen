@@ -1,5 +1,17 @@
 import { useState } from "react";
 
+const Button = (props) => {
+  return <button onClick={props.onClick}>{props.text}</button>;
+};
+
+const StatisticsLine = ({ valText, val }) => {
+  return (
+    <p>
+      {valText}: {val}
+    </p>
+  );
+};
+
 const Statistics = (props) => {
   if (props.val1 === 0 && props.val2 === 0 && props.val3 === 0) {
     return (
@@ -13,15 +25,9 @@ const Statistics = (props) => {
   return (
     <div>
       <h1>{props.title}</h1>
-      <p>
-        {props.valText1}: {props.val1}
-      </p>
-      <p>
-        {props.valText2}: {props.val2}
-      </p>
-      <p>
-        {props.valText3}: {props.val3}
-      </p>
+      <StatisticsLine valText={props.valText1} val={props.val1} />
+      <StatisticsLine valText={props.valText2} val={props.val2} />
+      <StatisticsLine valText={props.valText3} val={props.val3} />
     </div>
   );
 };
@@ -77,9 +83,9 @@ const App = () => {
       <div>
         <h1>Give Feedback</h1>
         <div>
-          <button onClick={handleGood}>Good</button>
-          <button onClick={handleNeutral}>Neutral</button>
-          <button onClick={handleBad}>Bad</button>
+          <Button onClick={handleGood} text="Good" />
+          <Button onClick={handleNeutral} text="Neutral" />
+          <Button onClick={handleBad} text="Bad" />
         </div>
       </div>
 

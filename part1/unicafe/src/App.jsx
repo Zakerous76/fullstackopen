@@ -28,7 +28,7 @@ const Statistics = (props) => {
       <tr>
         <th>{props.title}</th>
       </tr>
-      <StatisticsLine valText={props.valText1} val={props.val1} />
+      <StatisticsLine valText={prsops.valText1} val={props.val1} />
       <StatisticsLine valText={props.valText2} val={props.val2} />
       <StatisticsLine valText={props.valText3} val={props.val3} />
     </table>

@@ -5,6 +5,11 @@ const Course = ({ course }) => {
     <div>
       <Header course={course.name} />
       <Content parts={course.parts} />
+      <Total
+        total={course.parts.reduce((sum, x) => {
+          return sum + x.exercises;
+        }, 0)}
+      />
     </div>
   );
 };

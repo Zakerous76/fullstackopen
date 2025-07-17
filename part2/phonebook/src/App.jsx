@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Numbers = ({ numbers: persons }) => {
+const Numbers = ({ persons }) => {
   return (
     <div>
       {persons.map((entry) => {
@@ -17,9 +17,18 @@ const App = () => {
   const addNewName = (event) => {
     event.preventDefault();
     const newPerson = { name: newName };
-    setPersons(persons.concat(newPerson));
-    console.log(persons);
-    setNewName("");
+    const result = persons
+      .map((x) => {
+        return x.name.toLowerCase() === newName.toLowerCase();
+      })
+      .includes(true);
+
+    if (!result) {
+      setPersons(persons.concat(newPerson));
+      setNewName("");
+    } else {
+      alert(`${newName} is already added to the phonebook`);
+    }
   };
 
   const handleSetNewName = (event) => {
@@ -38,7 +47,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      <Numbers numbers={persons} />
+      <Numbers persons={persons} />
     </div>
   );
 };

@@ -9,28 +9,36 @@ const PersonForm = ({ persons, setPersons, setVisiblePersons }) => {
   const addNewName = (event) => {
     event.preventDefault();
     const newPerson = { name: newName, number: newNumber };
-    const result = persons
-      .map((x) => {
-        return x.name.toLowerCase() === newName.toLowerCase();
-      })
-      .includes(true);
+    const result = persons.find(
+      (element) => element.name.toLowerCase() === newName.toLowerCase()
+    );
+    console.log("result:", result);
     if (!result) {
       noteServices.create(newPerson).then(() => {
         noteServices
           .getAll()
           .then((newPersons) => {
-            console.log("newPersons: ", newPersons);
             setPersons(newPersons);
             setVisiblePersons(newPersons);
           })
           .catch((err) => {
-            console.log(`Couldn't add the entry. \nSome error occured: ${err}`);
+            alret(`Couldn't add the entry. \nSome error occured: ${err}`);
           });
       });
 
       setNewName("");
     } else {
-      alert(`${newName} is already added to the phonebook`);
+      const answer = window.confirm(
+        `${newName} is already added to the phonebook. \nWould you like to update it?`
+      );
+      if (answer) {
+        noteServices.update(result.id, newPerson).then(() => {
+          const newVisiblePersons = persons.map((oldPerson) =>
+            oldPerson.id === result.id ? newPerson : oldPerson
+          );
+          setVisiblePersons(newVisiblePersons);
+        });
+      }
     }
   };
 

@@ -15,10 +15,19 @@ const PersonForm = ({ persons, setPersons, setVisiblePersons }) => {
       })
       .includes(true);
     if (!result) {
-      const newPersons = persons.concat(newPerson);
-      noteServices.create(newPerson);
-      setPersons(newPersons);
-      setVisiblePersons(newPersons);
+      noteServices.create(newPerson).then(() => {
+        noteServices
+          .getAll()
+          .then((newPersons) => {
+            console.log("newPersons: ", newPersons);
+            setPersons(newPersons);
+            setVisiblePersons(newPersons);
+          })
+          .catch((err) => {
+            console.log(`Couldn't add the entry. \nSome error occured: ${err}`);
+          });
+      });
+
       setNewName("");
     } else {
       alert(`${newName} is already added to the phonebook`);

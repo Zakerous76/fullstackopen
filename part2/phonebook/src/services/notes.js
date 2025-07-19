@@ -14,4 +14,8 @@ const update = (id, obj) => {
   return axios.put(`${baseURL}/${id}`, obj).then((res) => res.data);
 };
 
-export default { getAll, create, update };
+const deleteNote = (id) => {
+  return axios.delete(`${baseURL}/${id}`).then((res) => console.log(res));
+};
+
+export default { getAll, create, update, deleteNote };

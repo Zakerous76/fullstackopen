@@ -3,7 +3,6 @@ import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
 import SearchFilter from "./components/SearchFilter";
 import { useEffect } from "react";
-import axios from "axios";
 import noteServices from "./services/notes";
 
 const App = () => {
@@ -17,6 +16,7 @@ const App = () => {
   }, []);
 
   const [visiblePersons, setVisiblePersons] = useState(persons);
+
   // A super wacky solution, but it works
   return (
     <div>
@@ -29,7 +29,10 @@ const App = () => {
         setVisiblePersons={setVisiblePersons}
       />
       <h3>Numbers</h3>
-      <Persons persons={visiblePersons} />
+      <Persons
+        visiblePersons={visiblePersons}
+        setVisiblePersons={setVisiblePersons}
+      />
     </div>
   );
 };

@@ -40,6 +40,7 @@ const Persons = ({
                         });
                       }, 5000);
                     })
+                    // I've already fixed the issue, sir ( ˶ˆ ᗜ ˆ˵ )
                     .catch((err) => {
                       let message = "";
                       if (err.status === 404) {

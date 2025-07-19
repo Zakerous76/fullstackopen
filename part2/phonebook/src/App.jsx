@@ -4,14 +4,15 @@ import PersonForm from "./components/PersonForm";
 import SearchFilter from "./components/SearchFilter";
 import { useEffect } from "react";
 import axios from "axios";
+import noteServices from "./services/notes";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((res) => {
-      setPersons(res.data);
-      setVisiblePersons(res.data);
+    noteServices.getAll().then((res) => {
+      setPersons(res);
+      setVisiblePersons(res);
     });
   }, []);
 

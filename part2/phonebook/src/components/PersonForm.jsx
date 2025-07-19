@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import noteServices from "../services/notes";
 
 const PersonForm = ({ persons, setPersons, setVisiblePersons }) => {
   const [newName, setNewName] = useState(""); // for controlling <input/>
@@ -15,6 +16,7 @@ const PersonForm = ({ persons, setPersons, setVisiblePersons }) => {
       .includes(true);
     if (!result) {
       const newPersons = persons.concat(newPerson);
+      noteServices.create(newPerson);
       setPersons(newPersons);
       setVisiblePersons(newPersons);
       setNewName("");

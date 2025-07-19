@@ -1,7 +1,15 @@
 import React from "react";
+import { useState } from "react";
 
-const Result = ({ searchResult }) => {
+const Result = ({ searchResult, setSearchResult }) => {
   const length = searchResult.length;
+
+  const handleCountryClick = (param) => () => {
+    const filteredSearchResult = searchResult.find((country) => {
+      return country.name.common.toLowerCase() === param.toLowerCase();
+    });
+    setSearchResult([].concat(filteredSearchResult));
+  };
 
   if (length > 10) {
     return (
@@ -43,7 +51,13 @@ const Result = ({ searchResult }) => {
       <div className="result">
         {searchResult.map((country) => (
           <li key={country.name.common}>
-            {country.name.common}
+            {country.name.common}{" "}
+            <button
+              type="text"
+              onClick={handleCountryClick(country.name.common)}
+            >
+              Show
+            </button>
             <br />
           </li>
         ))}

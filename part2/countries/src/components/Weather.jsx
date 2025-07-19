@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import weatherServices from "../services/weather";
 
 const getIconSrc = (iconId) => {
-  console.log("iconId,", iconId);
   return `https://openweathermap.org/img/wn/${iconId}@2x.png`;
 };
 

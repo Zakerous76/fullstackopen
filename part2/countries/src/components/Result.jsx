@@ -25,8 +25,6 @@ const Result = ({ searchResult, setSearchResult }) => {
   else if (length === 1) {
     const country = searchResult[0];
 
-    console.log(country);
-
     const countryName = country.name.common;
     const countryCode = country.cca2;
     const capital = country.capital[0];

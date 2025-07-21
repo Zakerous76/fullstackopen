@@ -31,7 +31,6 @@ let phonebook = [
 // Generate ID helper function
 const generateID = () => {
   const id = Math.floor(Math.random() * 1000000);
-  console.log("generated id: ", id);
   return id;
 };
 
@@ -99,15 +98,39 @@ app.delete("/api/persons/:id", (req, res) => {
 // CREATE a new person
 app.post("/api/persons", (req, res) => {
   const body = req.body;
-  console.log(body);
   const id = generateID();
-  if (body) {
+  if (req.headers["content-type"] === "application/json") {
+    if (!body.name) {
+      console.log("Name missing");
+      res.status(400).json({ error: "name missing: enter a name" });
+      return;
+    }
+
+    if (!body.number) {
+      console.log("Number missing");
+      res.status(400).json({ error: "number missing: enter a number" });
+      return;
+    }
+
+    const nameExists = phonebook
+      .map((person) => person.name.toLowerCase())
+      .includes(body.name);
+
+    console.log("nameExists: ", nameExists);
+    if (nameExists) {
+      console.log("Name is not unique");
+      res.status(400).json({ error: "name must be unique" });
+      return;
+    }
+
     const newPerson = { ...body, id };
     phonebook = phonebook.concat(newPerson);
     res.status(201).json(newPerson);
+    console.log("personCreated: ", newPerson);
     return;
   }
-  res.status(400).json({ error: "A bad request. Fix body or content-type." });
+  console.log("A bad request. Fix content-type.");
+  res.status(400).json({ error: "A bad request. Fix content-type." });
 });
 
 // Start server

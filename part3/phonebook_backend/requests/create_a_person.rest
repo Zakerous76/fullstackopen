@@ -1,0 +1,29 @@
+# Correct
+POST http://localhost:3001/api/persons/ HTTP/1.1
+Content-Type: application/json
+
+{"name": "zaker","number":"552358"}
+
+###
+# Case 0
+POST http://localhost:3001/api/persons/ HTTP/1.1
+Content-Type: text/html
+
+{"name": "zaker","number":"552358"}
+
+
+###
+# Case 1
+POST http://localhost:3001/api/persons/ HTTP/1.1
+Content-Type: application/json
+
+{"name": "zaker"}
+
+
+###
+# Case 2
+POST http://localhost:3001/api/persons/ HTTP/1.1
+Content-Type: application/json
+
+{"number":"552358"}
+

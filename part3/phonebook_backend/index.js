@@ -5,7 +5,7 @@ const PORT = 3001;
 const app = express();
 app.use(express.json());
 
-const phonebook = [
+let phonebook = [
   {
     id: "1",
     name: "Arto Hellas",
@@ -67,6 +67,26 @@ app.get("/api/persons/:id", (req, res) => {
     return;
   }
   res.status(404).json({ error: `Person with ID:${personId} not found` });
+});
+
+// DELETE a person
+app.delete("/api/persons/:id", (req, res) => {
+  const personId = req.params.id;
+  const person = phonebook.find((p) => p.id === personId);
+  if (person) {
+    phonebook = phonebook.filter((p) => p.id !== personId);
+    res.status(200).json({
+      delete: "success",
+      deletedPerson: person,
+    });
+    console.log("New Phonebook:", phonebook);
+    return;
+  }
+  res.status(404).json({
+    delete: "fail",
+    message: `Person with ID: ${personId} does not exist`,
+  });
+  return;
 });
 
 // Start server

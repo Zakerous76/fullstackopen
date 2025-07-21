@@ -28,6 +28,13 @@ let phonebook = [
   },
 ];
 
+// Generate ID helper function
+const generateID = () => {
+  const id = Math.floor(Math.random() * 1000000);
+  console.log("generated id: ", id);
+  return id;
+};
+
 // # Routes
 
 // ROOT
@@ -87,6 +94,20 @@ app.delete("/api/persons/:id", (req, res) => {
     message: `Person with ID: ${personId} does not exist`,
   });
   return;
+});
+
+// CREATE a new person
+app.post("/api/persons", (req, res) => {
+  const body = req.body;
+  console.log(body);
+  const id = generateID();
+  if (body) {
+    const newPerson = { ...body, id };
+    phonebook = phonebook.concat(newPerson);
+    res.status(201).json(newPerson);
+    return;
+  }
+  res.status(400).json({ error: "A bad request. Fix body or content-type." });
 });
 
 // Start server

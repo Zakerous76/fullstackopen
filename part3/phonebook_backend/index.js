@@ -58,7 +58,6 @@ const generateID = () => {
 // ROOT
 app.get("/", (req, res) => {
   console.log("Say hello to my little friend!!");
-
   res.status(200).end("Say hello to my little friend!!");
 });
 

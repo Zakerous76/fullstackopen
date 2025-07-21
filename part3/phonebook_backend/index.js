@@ -1,9 +1,13 @@
 const express = require("express");
 const { format } = require("date-fns");
+const morgan = require("morgan");
+
 const PORT = 3001;
 
 const app = express();
 app.use(express.json());
+
+app.use(morgan("tiny"));
 
 let phonebook = [
   {
@@ -39,6 +43,7 @@ const generateID = () => {
 // ROOT
 app.get("/", (req, res) => {
   console.log("Say hello to my little friend!!");
+
   res.status(200).end("Say hello to my little friend!!");
 });
 

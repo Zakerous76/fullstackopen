@@ -1,4 +1,5 @@
 const express = require("express");
+const { format } = require("date-fns");
 const PORT = 3001;
 
 const app = express();
@@ -38,6 +39,23 @@ app.get("/", (req, res) => {
 // GET persons
 app.get("/api/persons", (req, res) => {
   res.status(200).json(phonebook);
+});
+
+// GET info
+app.get("/info", (req, res) => {
+  const currentTime = new Date().toLocaleString("en-US", {
+    timeZoneName: "long",
+  });
+
+  const peopleNum = phonebook.length;
+
+  const formattedTime = format(
+    currentTime,
+    "eee MMM dd yyyy HH:mm:ss 'GMT'xxx (zzzz)"
+  );
+  const responseString = `Phonebook has info for ${peopleNum} people<p>${formattedTime}</p>`;
+
+  res.status(200).send(responseString);
 });
 
 // Start server

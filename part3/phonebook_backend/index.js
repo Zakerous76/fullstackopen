@@ -7,7 +7,22 @@ const PORT = 3001;
 const app = express();
 app.use(express.json());
 
-app.use(morgan("tiny"));
+app.use(
+  morgan((tokens, req, res) => {
+    const responseBody = JSON.stringify(res.req.body);
+    console.log(responseBody);
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, "content-length"),
+      "-",
+      tokens["response-time"](req, res),
+      "ms",
+      responseBody,
+    ].join(" ");
+  })
+);
 
 let phonebook = [
   {

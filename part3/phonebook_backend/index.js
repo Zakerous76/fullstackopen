@@ -101,41 +101,40 @@ app.delete("/api/persons/:id", (req, res) => {
 });
 
 // CREATE a new person
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, response) => {
   const body = req.body;
-  const id = generateID();
   if (req.headers["content-type"] === "application/json") {
     if (!body.name) {
       console.log("Name missing");
-      res.status(400).json({ error: "name missing: enter a name" });
+      response.status(400).json({ error: "name missing: enter a name" });
       return;
     }
 
     if (!body.number) {
       console.log("Number missing");
-      res.status(400).json({ error: "number missing: enter a number" });
+      response.status(400).json({ error: "number missing: enter a number" });
       return;
     }
-
-    const nameExists = phonebook
-      .map((person) => person.name.toLowerCase())
-      .includes(body.name);
-
-    console.log("nameExists: ", nameExists);
-    if (nameExists) {
-      console.log("Name is not unique");
-      res.status(400).json({ error: "name must be unique" });
-      return;
-    }
-
-    const newPerson = { ...body, id };
-    phonebook = phonebook.concat(newPerson);
-    res.status(201).json(newPerson);
-    console.log("personCreated: ", newPerson);
-    return;
+    const newName = body.name;
+    PersonModel.find({ name: newName }).then((result) => {
+      console.log("result:,", result);
+      const nameExists = result.length == 0 ? false : true;
+      if (nameExists) {
+        console.log("Name is not unique");
+        response.status(400).json({ error: "name must be unique" });
+        return;
+      }
+      const newPerson = new PersonModel({ ...body });
+      newPerson.save().then((savedPerson) => {
+        response.status(201).json(savedPerson);
+        console.log("personCreated: ", savedPerson);
+        return;
+      });
+    });
+  } else {
+    console.log("A bad request. Fix content-type.");
+    response.status(400).json({ error: "A bad request. Fix content-type." });
   }
-  console.log("A bad request. Fix content-type.");
-  res.status(400).json({ error: "A bad request. Fix content-type." });
 });
 
 // Start server

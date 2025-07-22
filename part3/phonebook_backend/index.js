@@ -1,13 +1,16 @@
+require("dotenv").config();
 const express = require("express");
 const { format } = require("date-fns");
 const morgan = require("morgan");
+const PersonModel = require("./models/person");
 
-const PORT = 3001;
+const PORT = process.env.PORT;
 
 const app = express();
 app.use(express.json());
 app.use(express.static("dist"));
 
+// Morgan logger
 app.use(
   morgan((tokens, req, res) => {
     const responseBody = JSON.stringify(res.req.body);
@@ -25,35 +28,6 @@ app.use(
   })
 );
 
-let phonebook = [
-  {
-    id: "1",
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: "2",
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: "3",
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: "4",
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
-
-// Generate ID helper function
-const generateID = () => {
-  const id = Math.floor(Math.random() * 1000000);
-  return String(id);
-};
-
 // # Routes
 
 // ROOT
@@ -64,7 +38,14 @@ app.get("/", (req, res) => {
 
 // GET persons
 app.get("/api/persons", (req, res) => {
-  res.status(200).json(phonebook);
+  PersonModel.find({})
+    .then((phonebook) => {
+      console.log(phonebook);
+      res.status(200).json(phonebook);
+    })
+    .catch((error) => {
+      res.status(500).json(error);
+    });
 });
 
 // GET info
@@ -73,15 +54,19 @@ app.get("/info", (req, res) => {
     timeZoneName: "long",
   });
 
-  const peopleNum = phonebook.length;
-
-  const formattedTime = format(
-    currentTime,
-    "eee MMM dd yyyy HH:mm:ss 'GMT'xxx (zzzz)"
-  );
-  const responseString = `Phonebook has info for ${peopleNum} people<p>${formattedTime}</p>`;
-
-  res.status(200).send(responseString);
+  PersonModel.find({})
+    .then((phonebook) => {
+      const peopleNum = phonebook.length;
+      const formattedTime = format(
+        currentTime,
+        "eee MMM dd yyyy HH:mm:ss 'GMT'xxx (zzzz)"
+      );
+      const responseString = `Phonebook has info for ${peopleNum} people<p>${formattedTime}</p>`;
+      res.status(200).send(responseString);
+    })
+    .catch((error) => {
+      res.status(500).json(error);
+    });
 });
 
 // GET a person

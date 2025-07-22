@@ -47,7 +47,7 @@ app.get("/api/persons", (req, res) => {
     });
 });
 
-// GET info
+// GET info: already done
 app.get("/info", (req, res) => {
   const currentTime = new Date().toLocaleString("en-US", {
     timeZoneName: "long",
@@ -68,7 +68,7 @@ app.get("/info", (req, res) => {
     });
 });
 
-// GET a person
+// GET a person: already done
 app.get("/api/persons/:id", (req, res, next) => {
   const personId = req.params.id;
 

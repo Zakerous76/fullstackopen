@@ -11,7 +11,7 @@ const PersonForm = ({
   const [newName, setNewName] = useState(""); // for controlling <input/>
   const [newNumber, setNewNumber] = useState("");
 
-  const addNewName = (event) => {
+  const addNewPerson = (event) => {
     event.preventDefault();
     const newPerson = { name: newName, number: newNumber };
 
@@ -20,36 +20,51 @@ const PersonForm = ({
     );
     // New Person
     if (!isPersonExist) {
-      personServices.create(newPerson).then(() => {
-        personServices
-          .getAll()
-          .then((newPersons) => {
-            setPersons(newPersons);
-            setVisiblePersons(newPersons);
-            setNotification({
-              message: `Added ${newName}`,
-              success: true,
-            });
-            setTimeout(() => {
+      personServices
+        .create(newPerson)
+        .then(() => {
+          personServices
+            .getAll()
+            .then((newPersons) => {
+              setPersons(newPersons);
+              setVisiblePersons(newPersons);
               setNotification({
-                message: null,
+                message: `Added ${newName}`,
+                success: true,
+              });
+              setTimeout(() => {
+                setNotification({
+                  message: null,
+                  success: false,
+                });
+              }, 5000);
+            })
+            .catch((err) => {
+              setNotification({
+                message: `Couldn't add the entry. \nSome error occured: ${err}`,
                 success: false,
               });
-            }, 5000);
-          })
-          .catch((err) => {
+              setTimeout(() => {
+                setNotification({
+                  message: null,
+                  success: false,
+                });
+              }, 5000);
+            });
+        })
+        .catch((error) => {
+          console.log(error);
+          setNotification({
+            message: `Person validation failed: ${error.response.data.message}`,
+            success: false,
+          });
+          setTimeout(() => {
             setNotification({
-              message: `Couldn't add the entry. \nSome error occured: ${err}`,
+              message: null,
               success: false,
             });
-            setTimeout(() => {
-              setNotification({
-                message: null,
-                success: false,
-              });
-            }, 5000);
-          });
-      });
+          }, 7000);
+        });
 
       setNewName("");
       setNewNumber("");
@@ -95,7 +110,7 @@ const PersonForm = ({
 
   return (
     <div>
-      <form onSubmit={addNewName}>
+      <form onSubmit={addNewPerson}>
         <div>
           <label htmlFor="name">name: </label>
           <input

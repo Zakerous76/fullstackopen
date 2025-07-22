@@ -94,7 +94,7 @@ app.delete("/api/persons/:id", (req, res) => {
 });
 
 // CREATE a new person
-app.post("/api/persons", (req, response) => {
+app.post("/api/persons", (req, response, next) => {
   const body = req.body;
   if (req.headers["content-type"] === "application/json") {
     if (!body.name) {
@@ -110,7 +110,6 @@ app.post("/api/persons", (req, response) => {
     }
     const newName = body.name;
     PersonModel.find({ name: newName }).then((result) => {
-      console.log("result:,", result);
       const nameExists = result.length == 0 ? false : true;
       if (nameExists) {
         console.log("Name is not unique");
@@ -118,11 +117,14 @@ app.post("/api/persons", (req, response) => {
         return;
       }
       const newPerson = new PersonModel({ ...body });
-      newPerson.save().then((savedPerson) => {
-        response.status(201).json(savedPerson);
-        console.log("personCreated: ", savedPerson);
-        return;
-      });
+      newPerson
+        .save()
+        .then((savedPerson) => {
+          response.status(201).json(savedPerson);
+          console.log("personCreated: ", savedPerson);
+          return;
+        })
+        .catch((error) => next(error));
     });
   } else {
     console.log("A bad request. Fix content-type.");
@@ -133,7 +135,8 @@ app.post("/api/persons", (req, response) => {
 app.put("/api/persons/:id", (req, response, next) => {
   const id = req.params.id;
   const newPerson = req.body;
-  PersonModel.findByIdAndUpdate(id, newPerson)
+  const opts = { runValidators: true };
+  PersonModel.findByIdAndUpdate(id, newPerson, opts)
     .then((result) => {
       console.log("result:", result);
       if (result) {
@@ -154,6 +157,10 @@ const errorHandler = (error, req, res, next) => {
     return res
       .status(400)
       .json({ error: "malformatted id", message: error.message });
+  } else if (error.name === "ValidationError") {
+    return res
+      .status(400)
+      .json({ error: "Validation error", message: error.message });
   }
   next(error);
 };

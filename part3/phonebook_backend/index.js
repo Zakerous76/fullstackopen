@@ -83,21 +83,9 @@ app.get("/api/persons/:id", (req, res) => {
 // DELETE a person
 app.delete("/api/persons/:id", (req, res) => {
   const personId = req.params.id;
-  const person = phonebook.find((p) => p.id === personId);
-  if (person) {
-    phonebook = phonebook.filter((p) => p.id !== personId);
-    res.status(200).json({
-      delete: "success",
-      deletedPerson: person,
-    });
-    console.log("New Phonebook:", phonebook);
-    return;
-  }
-  res.status(404).json({
-    delete: "fail",
-    message: `Person with ID: ${personId} does not exist`,
+  PersonModel.findByIdAndDelete(personId).then((result) => {
+    return res.status(204).end();
   });
-  return;
 });
 
 // CREATE a new person

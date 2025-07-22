@@ -112,8 +112,12 @@ app.post("/api/persons", (req, response, next) => {
     PersonModel.find({ name: newName }).then((result) => {
       const nameExists = result.length == 0 ? false : true;
       if (nameExists) {
-        console.log("Name is not unique");
-        response.status(400).json({ error: "name must be unique" });
+        console.log(
+          "Person already exists in the Database. Use the PUT endpoint to update it"
+        );
+        response
+          .status(400)
+          .json({ error: "Person already exists in the Database" });
         return;
       }
       const newPerson = new PersonModel({ ...body });
@@ -138,13 +142,14 @@ app.put("/api/persons/:id", (req, response, next) => {
   const opts = { runValidators: true };
   PersonModel.findByIdAndUpdate(id, newPerson, opts)
     .then((result) => {
-      console.log("result:", result);
       if (result) {
         return response.status(200).json(result);
       }
       return response.status(404).json({ error: "person not found" });
     })
-    .catch((error) => next(error));
+    .catch((error) => {
+      next(error);
+    });
 });
 
 const unknownEndpoint = (req, res) => {
@@ -158,6 +163,7 @@ const errorHandler = (error, req, res, next) => {
       .status(400)
       .json({ error: "malformatted id", message: error.message });
   } else if (error.name === "ValidationError") {
+    console.log(error.message);
     return res
       .status(400)
       .json({ error: "Validation error", message: error.message });

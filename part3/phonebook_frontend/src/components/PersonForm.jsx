@@ -74,28 +74,39 @@ const PersonForm = ({
       const answer = window.confirm(
         `${newName} is already added to the phonebook. \nWould you like to update it?`
       );
-      console.log("answer: ", answer);
       if (answer) {
-        personServices.update(isPersonExist.id, newPerson).then((res) => {
-          const newVisiblePersons = persons.map((oldPerson) => {
-            console.log("oldPerson: ", oldPerson);
-            console.log("isPersonExist: ", isPersonExist);
-            console.log("res: ", res);
-            return oldPerson.id === isPersonExist.id ? newPerson : oldPerson;
-          });
-          setVisiblePersons(newVisiblePersons);
-          setPersons(newVisiblePersons);
-          setNotification({
-            message: `Updated ${newName}'s entry`,
-            success: true,
-          });
-          setTimeout(() => {
+        personServices
+          .update(isPersonExist.id, newPerson)
+          .then((res) => {
+            const newVisiblePersons = persons.map((oldPerson) => {
+              return oldPerson.id === isPersonExist.id ? newPerson : oldPerson;
+            });
+
+            setVisiblePersons(newVisiblePersons);
+            setPersons(newVisiblePersons);
             setNotification({
-              message: null,
+              message: `Updated ${newName}'s entry`,
+              success: true,
+            });
+            setTimeout(() => {
+              setNotification({
+                message: null,
+                success: false,
+              });
+            }, 5000);
+          })
+          .catch((error) => {
+            setNotification({
+              message: `${error.response.data.message}`,
               success: false,
             });
-          }, 5000);
-        });
+            setTimeout(() => {
+              setNotification({
+                message: null,
+                success: false,
+              });
+            }, 5000);
+          });
       }
     }
   };
@@ -125,7 +136,7 @@ const PersonForm = ({
           <input
             type="tel"
             id="phoneNo"
-            placeholder="12-12-1234567"
+            placeholder="XXX-XXXXXXXX"
             // maxLength={10}
             // pattern="[0-9]{3} [0-9]{3} [0-9]{2} [0-9]{2}"
             value={newNumber}

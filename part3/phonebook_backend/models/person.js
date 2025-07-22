@@ -25,7 +25,17 @@ const personSchema = new mongoose.Schema({
     minLength: 3,
     required: true,
   },
-  number: String,
+  number: {
+    type: String,
+    validate: {
+      validator: (v) => {
+        return /\d{2,}-\d+$/.test(v);
+      },
+      message: `This is not a valid phone number! (2,3 digits)-(the rest) {min 8 digits}`,
+    },
+    minLength: 8,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Person", personSchema);

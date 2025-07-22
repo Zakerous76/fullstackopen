@@ -70,14 +70,21 @@ app.get("/info", (req, res) => {
 });
 
 // GET a person
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
   const personId = req.params.id;
-  const person = phonebook.find((p) => p.id === personId);
-  if (person) {
-    res.status(200).json(person);
-    return;
-  }
-  res.status(404).json({ error: `Person with ID:${personId} not found` });
+
+  PersonModel.findById(personId)
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({ error: "Person not Found" });
+      }
+      console.log(result);
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      console.log("Error Caught. Sending to: ", next);
+      next(error);
+    });
 });
 
 // DELETE a person
@@ -124,6 +131,22 @@ app.post("/api/persons", (req, response) => {
     response.status(400).json({ error: "A bad request. Fix content-type." });
   }
 });
+
+const unknownEndpoint = (req, res) => {
+  return res.status(404).json({ error: "unknown endpoint" });
+};
+app.use(unknownEndpoint);
+
+const errorHandler = (error, req, res, next) => {
+  if (error.name === "CastError") {
+    return res
+      .status(400)
+      .json({ error: "malformatted id", message: error.message });
+  }
+  next(error);
+};
+
+app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {

@@ -40,7 +40,6 @@ app.get("/", (req, res) => {
 app.get("/api/persons", (req, res) => {
   PersonModel.find({})
     .then((phonebook) => {
-      console.log(phonebook);
       res.status(200).json(phonebook);
     })
     .catch((error) => {
@@ -78,7 +77,6 @@ app.get("/api/persons/:id", (req, res, next) => {
       if (!result) {
         return res.status(404).json({ error: "Person not Found" });
       }
-      console.log(result);
       return res.status(200).json(result);
     })
     .catch((error) => {
@@ -130,6 +128,20 @@ app.post("/api/persons", (req, response) => {
     console.log("A bad request. Fix content-type.");
     response.status(400).json({ error: "A bad request. Fix content-type." });
   }
+});
+
+app.put("/api/persons/:id", (req, response, next) => {
+  const id = req.params.id;
+  const newPerson = req.body;
+  PersonModel.findByIdAndUpdate(id, newPerson)
+    .then((result) => {
+      console.log("result:", result);
+      if (result) {
+        return response.status(200).json(result);
+      }
+      return response.status(404).json({ error: "person not found" });
+    })
+    .catch((error) => next(error));
 });
 
 const unknownEndpoint = (req, res) => {

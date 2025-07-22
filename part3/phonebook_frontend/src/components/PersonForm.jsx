@@ -18,6 +18,7 @@ const PersonForm = ({
     const isPersonExist = persons.find(
       (element) => element.name.toLowerCase() === newName.toLowerCase()
     );
+    // New Person
     if (!isPersonExist) {
       personServices.create(newPerson).then(() => {
         personServices
@@ -58,11 +59,15 @@ const PersonForm = ({
       const answer = window.confirm(
         `${newName} is already added to the phonebook. \nWould you like to update it?`
       );
+      console.log("answer: ", answer);
       if (answer) {
         personServices.update(isPersonExist.id, newPerson).then((res) => {
-          const newVisiblePersons = persons.map((oldPerson) =>
-            oldPerson.id === isPersonExist.id ? res : oldPerson
-          );
+          const newVisiblePersons = persons.map((oldPerson) => {
+            console.log("oldPerson: ", oldPerson);
+            console.log("isPersonExist: ", isPersonExist);
+            console.log("res: ", res);
+            return oldPerson.id === isPersonExist.id ? newPerson : oldPerson;
+          });
           setVisiblePersons(newVisiblePersons);
           setPersons(newVisiblePersons);
           setNotification({

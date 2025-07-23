@@ -1,7 +1,6 @@
 const { test, describe } = require("node:test");
 const assert = require("node:assert");
-const totalLikes = require("../utils/list_helper").totalLikes;
-
+const { dummy, totalLikes, favoriteBlog } = require("../utils/list_helper");
 const blogs = [
   {
     _id: "5a422a851b54a676234d17f7",
@@ -53,11 +52,24 @@ const blogs = [
   },
 ];
 
+describe("dummy", () => {
+  test("returns one", () => {
+    const blogs = [];
+    assert.strictEqual(dummy(blogs), 1);
+  });
+});
+
 describe("totalLikes", () => {
   test("of empty list is zero", () => {
     assert.strictEqual(totalLikes([]), 0);
   });
   test("when list has only one blog equals the likes of that", () => {
     assert.strictEqual(totalLikes([].concat(blogs[0])), blogs[0].likes);
+  });
+});
+
+describe("favoriteBlog", () => {
+  test("should be blog[2]", () => {
+    assert.deepStrictEqual(favoriteBlog(blogs), blogs[2]);
   });
 });

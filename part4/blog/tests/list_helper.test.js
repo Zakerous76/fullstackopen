@@ -5,6 +5,7 @@ const {
   totalLikes,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
 } = require("../utils/list_helper");
 const blogs = [
   {
@@ -81,6 +82,15 @@ describe("favoriteBlog", () => {
 
 describe("mostBlogs", () => {
   test("belong to Robert C. Martin with 3 blogs", () => {
+    assert.deepStrictEqual(mostBlogs(blogs), {
+      bestAuthor: "Robert C. Martin",
+      bestAuthorBlogsCount: 3,
+    });
+  });
+});
+
+describe("mostLikes", () => {
+  test("belong to Edsger W. Dijkstra with 17 blogs", () => {
     assert.deepStrictEqual(mostBlogs(blogs), {
       bestAuthor: "Robert C. Martin",
       bestAuthorBlogsCount: 3,

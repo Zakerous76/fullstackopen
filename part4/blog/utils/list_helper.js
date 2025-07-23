@@ -41,9 +41,33 @@ const mostBlogs = (blogs) => {
   return { bestAuthor, bestAuthorBlogsCount };
 };
 
+const mostLikes = (blogs) => {
+  // return author who the most number of blogs, and the total number of blogs
+  let authors = new Map();
+  for (let index = 0; index < blogs.length; index++) {
+    let author = blogs[index].author;
+    let prevLikesCount = authors.get(author) ? authors.get(author) : 0;
+    authors.set(author, 1 + prevLikesCount);
+  }
+
+  let mostLikedAuthor = "";
+  let mostLikedAuthorLikesCount = 0;
+  authors.forEach((val, key) => {
+    if (val > mostLikedAuthorLikesCount) {
+      mostLikedAuthor = key;
+      mostLikedAuthorLikesCount = val;
+    }
+  });
+  return {
+    mostLikedAuthor,
+    bestAuthorBlogsCount: mostLikedAuthorLikesCount,
+  };
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
 };

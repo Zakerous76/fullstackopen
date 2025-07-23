@@ -10,14 +10,6 @@ const totalLikes = (blogs) => {
 };
 
 const favoriteBlog = (blogs) => {
-  // const likes = blogs.map((blog) => blog.likes);
-  // console.log(blogs);
-  // console.log("likes", likes);
-  // const mostLikes = Math.max(likes.map((x) => x));
-  // console.log("mostLikes", mostLikes);
-  // const mostLikesIndex = likes.findIndex((like) => like === mostLikes);
-  // console.log("mostLikesIndex", mostLikesIndex);
-
   let maxLike = 0;
   let maxLikeId = null;
   for (let index = 0; index < blogs.length; index++) {
@@ -26,19 +18,32 @@ const favoriteBlog = (blogs) => {
       maxLikeId = index;
     }
   }
-
-  // blogs.map((blog) => {
-  //   if (blog.likes > maxLike) {
-  //     maxLike = blog.likes;
-  //     maxLikeId = index;
-  //   }
-  // });
-
   return blogs[maxLikeId];
+};
+
+const mostBlogs = (blogs) => {
+  // return author who the most number of blogs, and the total number of blogs
+  let authors = new Map();
+  for (let index = 0; index < blogs.length; index++) {
+    let author = blogs[index].author;
+    let prevBlogCount = authors.get(author) ? authors.get(author) : 0;
+    authors.set(author, 1 + prevBlogCount);
+  }
+
+  let bestAuthor = "";
+  let bestAuthorBlogsCount = 0;
+  authors.forEach((val, key) => {
+    if (val > bestAuthorBlogsCount) {
+      bestAuthor = key;
+      bestAuthorBlogsCount = val;
+    }
+  });
+  return { bestAuthor, bestAuthorBlogsCount };
 };
 
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
+  mostBlogs,
 };

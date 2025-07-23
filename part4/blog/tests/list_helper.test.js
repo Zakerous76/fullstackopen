@@ -1,6 +1,11 @@
 const { test, describe } = require("node:test");
 const assert = require("node:assert");
-const { dummy, totalLikes, favoriteBlog } = require("../utils/list_helper");
+const {
+  dummy,
+  totalLikes,
+  favoriteBlog,
+  mostBlogs,
+} = require("../utils/list_helper");
 const blogs = [
   {
     _id: "5a422a851b54a676234d17f7",
@@ -71,5 +76,14 @@ describe("totalLikes", () => {
 describe("favoriteBlog", () => {
   test("should be blog[2]", () => {
     assert.deepStrictEqual(favoriteBlog(blogs), blogs[2]);
+  });
+});
+
+describe("mostBlogs", () => {
+  test("belong to Robert C. Martin with 3 blogs", () => {
+    assert.deepStrictEqual(mostBlogs(blogs), {
+      bestAuthor: "Robert C. Martin",
+      bestAuthorBlogsCount: 3,
+    });
   });
 });

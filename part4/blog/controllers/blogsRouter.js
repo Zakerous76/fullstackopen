@@ -9,10 +9,20 @@ blogsRouter.get("/", (request, response) => {
 
 blogsRouter.post("/", (request, response) => {
   const blog = new Blog(request.body);
+  const blogKeys = Object.keys(request.body);
 
-  blog.save().then((result) => {
-    response.status(201).json(result);
-  });
+  if (
+    blogKeys.includes("title") &&
+    blogKeys.includes("url") &&
+    request.body.title !== "" &&
+    request.body.url !== ""
+  ) {
+    blog.save().then((result) => response.status(201).json(result));
+  } else {
+    response
+      .status(400)
+      .json({ error: "BAD_REQUEST", message: "title or url is missing" });
+  }
 });
 
 module.exports = blogsRouter;

@@ -6,6 +6,7 @@ const blogsRouter = require("../controllers/blogsRouter");
 const helper = require("./test_helper");
 const mongoose = require("mongoose");
 const Blog = require("../models/blog");
+const deepClone = require("../utils/tools");
 
 const api = supertest(app);
 
@@ -41,7 +42,7 @@ describe("SuperTest", () => {
   });
 
   test("HTTP POST request to the /api/blogs URL successfully creates a new blog post", async () => {
-    const newPost = helper.blogExample;
+    const newPost = deepClone(helper.blogExample);
     const response = await api
       .post("/api/blogs")
       .send(newPost)
@@ -55,9 +56,36 @@ describe("SuperTest", () => {
   });
 
   test("if the likes property is missing from the request, it will default to the value 0", async () => {
-    const newPost = { author: "Morgan" };
+    const newPost = deepClone(helper.blogExample);
+    delete newPost._id;
+    delete newPost.__v;
+    delete newPost.likes;
+
     const response = await api.post("/api/blogs").send(newPost);
     assert.strictEqual(response.body.likes, 0);
+  });
+
+  test("if the title or url properties are missing from the request data, the backend responds to the request with the status code 400 Bad Request", async () => {
+    const newPost = deepClone(helper.blogExample);
+    delete newPost._id;
+    delete newPost.__v;
+
+    const newPost1 = deepClone(newPost);
+    delete newPost1.title;
+
+    await api.post("/api/blogs").send(newPost1).expect(400);
+
+    const newPost2 = deepClone(newPost);
+    delete newPost2.url;
+    await api.post("/api/blogs").send(newPost2).expect(400);
+
+    const newPost3 = deepClone(newPost);
+    delete newPost3.url;
+    delete newPost3.title;
+    await api.post("/api/blogs").send(newPost3).expect(400);
+
+    const newPost4 = deepClone(newPost);
+    await api.post("/api/blogs").send(newPost4).expect(201);
   });
 });
 

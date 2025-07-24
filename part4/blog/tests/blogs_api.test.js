@@ -15,7 +15,7 @@ before(async () => {
   await Blog.insertMany(helper.initialBlogsBefore);
 });
 
-describe("SuperTest", () => {
+describe("GET Tests", () => {
   test("GET returns correct number of blogs", async () => {
     const response = await api
       .get("/api/blogs")
@@ -40,7 +40,8 @@ describe("SuperTest", () => {
       Object.keys(helper.initialBlogsToJSON[0])[0]
     );
   });
-
+});
+describe("POST Tests", () => {
   test("HTTP POST request to the /api/blogs URL successfully creates a new blog post", async () => {
     const newPost = deepClone(helper.blogExample);
     const response = await api
@@ -65,7 +66,7 @@ describe("SuperTest", () => {
     assert.strictEqual(response.body.likes, 0);
   });
 
-  test("if the title or url properties are missing from the request data, the backend responds to the request with the status code 400 Bad Request", async () => {
+  test("if the title or url properties are missing from the request data, the backend responds with the status code 400", async () => {
     const newPost = deepClone(helper.blogExample);
     delete newPost._id;
     delete newPost.__v;
@@ -86,6 +87,17 @@ describe("SuperTest", () => {
 
     const newPost4 = deepClone(newPost);
     await api.post("/api/blogs").send(newPost4).expect(201);
+  });
+});
+describe("DELETE Tests", () => {
+  test("deleting a single post", async () => {
+    const newPost = deepClone(helper.blogExample);
+    delete newPost._id;
+
+    const response = await api.post("/api/blogs").send(newPost).expect(201);
+    const id = response.body.id;
+
+    await api.delete(`/api/blogs/${id}`).expect(204);
   });
 });
 

@@ -33,6 +33,20 @@ describe("SuperTest", () => {
       Object.keys(helper.initialBlogsToJSON[0])[0]
     );
   });
+
+  test("HTTP POST request to the /api/blogs URL successfully creates a new blog post", async () => {
+    const newPost = helper.blogExample;
+    const response = await api
+      .post("/api/blogs")
+      .send(newPost)
+      .expect(201)
+      .expect("Content-Type", /application\/json/);
+
+    const blogsInDB = await helper.blogsInDB();
+    assert.strictEqual(blogsInDB.length, helper.initialBlogsBefore.length + 1);
+
+    assert.deepStrictEqual(response.body, helper.blogExampleToJSON);
+  });
 });
 
 after(async () => {

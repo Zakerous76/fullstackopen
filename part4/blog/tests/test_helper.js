@@ -51,6 +51,23 @@ const initialBlogsToJSON = [
   },
 ];
 
+const blogExample = {
+  _id: "5a422bc61b54a676234d17fc",
+  title: "Type wars",
+  author: "Robert C. Martin",
+  url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+  likes: 2,
+  __v: 0,
+};
+
+const blogExampleToJSON = {
+  title: "Type wars",
+  author: "Robert C. Martin",
+  url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+  likes: 2,
+  id: "5a422bc61b54a676234d17fc",
+};
+
 const nonExistingID = async () => {
   const newBlog = new Blog(initialBlogsBefore[0]);
   await newBlog.save();
@@ -68,4 +85,6 @@ module.exports = {
   initialBlogsToJSON,
   nonExistingID,
   blogsInDB,
+  blogExample,
+  blogExampleToJSON,
 };

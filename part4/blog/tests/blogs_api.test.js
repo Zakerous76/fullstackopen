@@ -100,7 +100,19 @@ describe("DELETE Tests", () => {
     await api.delete(`/api/blogs/${id}`).expect(204);
   });
 });
+describe("UPDATE Tests", () => {
+  test("udpating a test", async () => {
+    const newPost = deepClone(helper.initialBlogsBefore[0]);
+    const id = newPost._id;
+    newPost.likes = 100;
+    const response = await api
+      .put(`/api/blogs/${id}`)
+      .send(newPost)
+      .expect(200);
 
+    assert.strictEqual(response.body.likes, newPost.likes);
+  });
+});
 after(async () => {
   await mongoose.connection.close();
 });

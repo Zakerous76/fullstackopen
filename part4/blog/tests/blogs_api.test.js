@@ -53,6 +53,12 @@ describe("SuperTest", () => {
 
     assert.deepStrictEqual(response.body, helper.blogExampleToJSON);
   });
+
+  test("if the likes property is missing from the request, it will default to the value 0", async () => {
+    const newPost = { author: "Morgan" };
+    const response = await api.post("/api/blogs").send(newPost);
+    assert.strictEqual(response.body.likes, 0);
+  });
 });
 
 after(async () => {

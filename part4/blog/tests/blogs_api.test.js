@@ -11,7 +11,7 @@ const api = supertest(app);
 
 before(async () => {
   await Blog.deleteMany({});
-  await Blog.insertMany(helper.initialBlogs);
+  await Blog.insertMany(helper.initialBlogsBefore);
 });
 
 describe("SuperTest", () => {
@@ -20,8 +20,18 @@ describe("SuperTest", () => {
     const content = response.body;
     const contentLength = content.length;
 
-    assert.strictEqual(contentLength, helper.initialBlogs.length);
-    assert.deepStrictEqual(content, helper.initialBlogs);
+    assert.strictEqual(contentLength, helper.initialBlogsToJSON.length);
+    assert.deepStrictEqual(content, helper.initialBlogsToJSON);
+  });
+  test("unique identifier property of the blog posts is named id", async () => {
+    const response = await api.get("/api/blogs");
+    const blog = response.body[0];
+    // console.log(Object.keys(blog));
+    // console.log(Object.keys(helper.initialBlogsToJSON[0]));
+    assert.deepStrictEqual(
+      Object.keys(blog)[4],
+      Object.keys(helper.initialBlogsToJSON[0])[0]
+    );
   });
 });
 

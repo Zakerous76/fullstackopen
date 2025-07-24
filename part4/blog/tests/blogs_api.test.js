@@ -16,7 +16,10 @@ before(async () => {
 
 describe("SuperTest", () => {
   test("GET returns correct number of blogs", async () => {
-    const response = await api.get("/api/blogs");
+    const response = await api
+      .get("/api/blogs")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
     const content = response.body;
     const contentLength = content.length;
 
@@ -24,7 +27,10 @@ describe("SuperTest", () => {
     assert.deepStrictEqual(content, helper.initialBlogsToJSON);
   });
   test("unique identifier property of the blog posts is named id", async () => {
-    const response = await api.get("/api/blogs");
+    const response = await api
+      .get("/api/blogs")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
     const blog = response.body[0];
     // console.log(Object.keys(blog));
     // console.log(Object.keys(helper.initialBlogsToJSON[0]));

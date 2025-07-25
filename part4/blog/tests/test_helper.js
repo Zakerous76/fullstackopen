@@ -103,6 +103,7 @@ const singleUser = {
   username: "rootTest3",
   name: "test3",
   passwordHash: "hiddenpassword",
+  blogs: [],
 };
 
 const usersInDB = async () => {

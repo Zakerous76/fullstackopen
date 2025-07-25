@@ -13,8 +13,8 @@ usersRouter.get("/", async (request, response) => {
 });
 
 usersRouter.post("/", async (request, response, next) => {
-  const { username, name, passwordHash } = request.body;
-
+  const { username, name } = request.body;
+  const passwordHash = request.body.password;
   if (passwordHash.length < 3) {
     return response.status(400).json({
       error:

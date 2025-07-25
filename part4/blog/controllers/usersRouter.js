@@ -11,6 +11,14 @@ usersRouter.get("/", async (request, response) => {
 
 usersRouter.post("/", async (request, response, next) => {
   const { username, name, passwordHash } = request.body;
+
+  if (passwordHash.length < 3) {
+    return response.status(400).json({
+      error:
+        "User validation failed: password is shorter than the minimum allowed length (3).",
+    });
+  }
+
   const salt = 10;
   const passwordHashGen = await bcrypt.hash(passwordHash, salt);
   const newUser = new User({

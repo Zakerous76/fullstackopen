@@ -46,9 +46,25 @@ const tokenExtractor = (request, response, next) => {
   next();
 };
 
+const userExtractor = (request, response, next) => {
+  const authorization = request.get("authorization");
+  let authorizationString = null;
+  request.user = null;
+  if (authorization && authorization.includes("Bearer")) {
+    authorizationString = authorization.replace("Bearer", "").trim();
+    const decodedToken = jwt.verify(authorizationString, SECRET);
+    if (decodedToken.id) {
+      request.user = { id: decodedToken.id, username: decodedToken.username };
+    }
+  }
+  console.log("request.user: ", request.user);
+  next();
+};
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
   tokenExtractor,
+  userExtractor,
 };

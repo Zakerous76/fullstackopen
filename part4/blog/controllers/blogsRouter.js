@@ -12,7 +12,7 @@ blogsRouter.get("/", async (request, response) => {
 });
 
 blogsRouter.post("/", async (request, response) => {
-  const decodedToken = jwt.verify(request.token, SECRET);
+  const decodedToken = request.user;
   if (!decodedToken.id) {
     return response.status(401).json({ error: "token invalid" });
   }
@@ -45,10 +45,7 @@ blogsRouter.post("/", async (request, response) => {
 });
 
 blogsRouter.delete("/:id", async (request, response) => {
-  if (!request.token) {
-    return response.status(400).json({ error: "please provide a token" });
-  }
-  const decodedToken = jwt.verify(request.token, SECRET);
+  const decodedToken = request.user;
   if (!decodedToken.id) {
     return response.status(401).json({ error: "token invalid" });
   }

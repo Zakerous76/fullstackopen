@@ -2,19 +2,21 @@ const config = require("./utils/config");
 const express = require("express");
 const mongoose = require("mongoose");
 const logger = require("./utils/logger");
+const loginRouter = require("./controllers/loginRouter");
 const blogsRouter = require("./controllers/blogsRouter");
 const usersRouter = require("./controllers/usersRouter");
 const {
   requestLogger,
   unknownEndpoint,
   errorHandler,
+  tokenExtractor,
 } = require("./utils/middleware");
-const loginRouter = require("./controllers/loginRouter");
 
 const app = express();
-app.use(express.json());
 
+app.use(express.json());
 app.use(requestLogger);
+app.use(tokenExtractor);
 
 logger.info("Connecting to DB...");
 mongoose.connect(config.MONGODB_URI);

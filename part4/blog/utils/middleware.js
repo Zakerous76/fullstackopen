@@ -1,3 +1,5 @@
+const { SECRET } = require("./config");
+const jwt = require("jsonwebtoken");
 const logger = require("./logger");
 
 const requestLogger = (request, response, next) => {
@@ -34,4 +36,19 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
-module.exports = { requestLogger, unknownEndpoint, errorHandler };
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get("authorization");
+  let authorizationString = null;
+  if (authorization && authorization.includes("Bearer")) {
+    authorizationString = authorization.replace("Bearer", "").trim();
+  }
+  request.token = authorizationString;
+  next();
+};
+
+module.exports = {
+  requestLogger,
+  unknownEndpoint,
+  errorHandler,
+  tokenExtractor,
+};

@@ -9,6 +9,7 @@ const {
   unknownEndpoint,
   errorHandler,
 } = require("./utils/middleware");
+const loginRouter = require("./controllers/loginRouter");
 
 const app = express();
 app.use(express.json());
@@ -18,6 +19,7 @@ app.use(requestLogger);
 logger.info("Connecting to DB...");
 mongoose.connect(config.MONGODB_URI);
 
+app.use("/api/login", loginRouter);
 app.use("/api/blogs", blogsRouter);
 app.use("/api/users", usersRouter);
 

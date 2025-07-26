@@ -47,6 +47,8 @@ blogsRouter.post("/", async (request, response) => {
 
 blogsRouter.delete("/:id", async (request, response) => {
   const decodedToken = request.user;
+  console.log("decodedToken: ", decodedToken);
+
   if (!decodedToken.id) {
     return response.status(401).json({ error: "token invalid" });
   }

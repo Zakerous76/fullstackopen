@@ -44,7 +44,25 @@ const Blog = ({ blog, setBlogs }) => {
           like
         </button>{" "}
         <br />
-        {blog.author}
+        {blog.author} <br />
+        <button
+          onClick={async () => {
+            const answer = window.confirm(
+              `Are you sure you want to remove: ${blog.title}?`
+            );
+            if (answer) {
+              await blogsService.deleteBlog(blog);
+
+              const updatedBlogs = await blogsService.getAll();
+              updatedBlogs.sort((blog1, blog2) => {
+                return blog2.likes - blog1.likes;
+              });
+              setBlogs(updatedBlogs);
+            }
+          }}
+        >
+          Remove
+        </button>
       </div>
     </div>
   );

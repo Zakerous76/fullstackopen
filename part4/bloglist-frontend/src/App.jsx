@@ -15,12 +15,22 @@ const App = () => {
   });
   const [user, setUser] = useState(null);
 
-  useEffect(async () => {
-    const getBlogs = await blogService.getAll();
-    getBlogs.sort((blog1, blog2) => {
-      return blog2.likes - blog1.likes;
-    });
-    setBlogs(getBlogs);
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const getBlogs = await blogService.getAll();
+        getBlogs.sort((a, b) => b.likes - a.likes);
+        setBlogs(getBlogs);
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+        setErrorMessage({
+          message: "Failed to load blogs.",
+          type: "error",
+        });
+      }
+    };
+
+    fetchBlogs();
   }, []);
 
   useEffect(() => {

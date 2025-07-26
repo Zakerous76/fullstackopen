@@ -8,7 +8,10 @@ import config from "./utils/config";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState({
+    message: null,
+    type: null,
+  });
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -26,13 +29,19 @@ const App = () => {
   }, []);
   return (
     <div>
-      <NotificationComponent message={errorMessage} />
       {user === null ? (
         <div className="login-form">
-          <LoginForm setUser={setUser} />
+          <NotificationComponent message={errorMessage} />
+
+          <h2>Log in to application</h2>
+          <LoginForm setUser={setUser} setErrorMessage={setErrorMessage} />
         </div>
       ) : (
         <div className="create-blog-form">
+          <NotificationComponent message={errorMessage} />
+
+          <h2>blogs</h2>
+
           <p>
             {user.name} is logged in{" "}
             <button
@@ -45,15 +54,18 @@ const App = () => {
               Log out
             </button>
           </p>
-          <BlogForm setBlogs={setBlogs} />
+          <BlogForm setBlogs={setBlogs} setErrorMessage={setErrorMessage} />
         </div>
       )}
 
       <div className="blog-list">
-        <h2>blogs</h2>
-        {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
-        ))}
+        {blogs.map((blog) => {
+          try {
+            return <Blog key={blog.id} blog={blog} />;
+          } catch (error) {
+            console.log(error);
+          }
+        })}
       </div>
     </div>
   );

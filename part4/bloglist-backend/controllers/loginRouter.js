@@ -12,7 +12,7 @@ loginRouter.post("/", async (request, response, next) => {
     console.log({ error: `User with username '${username} does not exist'` });
     return response
       .status(404)
-      .json({ error: `User with username '${username} does not exist'` });
+      .json({ error: `User with username '${username}' does not exist` });
   }
   const isPasswordCorrect = await bcrypt.compare(password, user.passwordHash);
   if (!isPasswordCorrect) {

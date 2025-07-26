@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import blogsService from "../services/blogs";
 
-const BlogForm = ({ setBlogs }) => {
+const BlogForm = ({ setBlogs, setErrorMessage }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
@@ -12,9 +12,22 @@ const BlogForm = ({ setBlogs }) => {
 
     try {
       const blog = await blogsService.create({ title, author, url });
+      if (blog.code === "ERR_BAD_RESPONSE") {
+        throw blog;
+      }
       setBlogs((prev) => prev.concat(blog));
+      setErrorMessage({
+        message: `A new Blog added: ${blog.title}`,
+        type: "info",
+      });
+      setTimeout(() => {
+        setErrorMessage({ message: null, type: null });
+      }, 5000);
     } catch (error) {
-      console.log(error);
+      setErrorMessage({
+        message: `Error, could not add the blog. Please log out and log in!`,
+        type: "error",
+      });
     }
   };
   return (

@@ -2,7 +2,7 @@ import { useState } from "react";
 import loginServices from "../services/login";
 import config from "../utils/config";
 import blogsService from "../services/blogs";
-const LoginForm = ({ setUser }) => {
+const LoginForm = ({ setUser, setErrorMessage }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -11,6 +11,9 @@ const LoginForm = ({ setUser }) => {
 
     try {
       const user = await loginServices.login({ username, password });
+      if (user.code === "ERR_BAD_REQUEST") {
+        throw user;
+      }
       if (user) {
         window.localStorage.setItem(
           config.localStorageUserKey,
@@ -20,8 +23,20 @@ const LoginForm = ({ setUser }) => {
         blogsService.setToken(user);
         setUsername("");
         setPassword("");
+        setErrorMessage({ message: `Welcome, ${user.name}!`, type: "info" });
+        setTimeout(() => {
+          setErrorMessage({ message: null, type: null });
+        }, 5000);
       }
-    } catch (error) {}
+    } catch (error) {
+      setErrorMessage({
+        message: `Error, ${error.response.data.error}!`,
+        type: "error",
+      });
+      setTimeout(() => {
+        setErrorMessage({ message: null, type: null });
+      }, 5000);
+    }
   };
 
   return (

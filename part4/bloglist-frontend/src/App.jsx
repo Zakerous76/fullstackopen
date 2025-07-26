@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import LoginForm from "./components/LoginForm";
-import blogService from "./services/blogs";
 import NotificationComponent from "./components/NotificationComponent";
+import BlogForm from "./components/BlogForm";
+import blogService from "./services/blogs";
 import config from "./utils/config";
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
     );
     if (userLocal) {
       setUser(userLocal);
+      blogService.setToken(userLocal);
     }
   }, []);
   return (
@@ -43,6 +45,7 @@ const App = () => {
               Log out
             </button>
           </p>
+          <BlogForm setBlogs={setBlogs} />
         </div>
       )}
 

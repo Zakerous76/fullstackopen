@@ -13,6 +13,7 @@ blogsRouter.get("/", async (request, response) => {
 
 blogsRouter.post("/", async (request, response) => {
   const decodedToken = request.user;
+  console.log("decoded token:", decodedToken);
   if (!decodedToken.id) {
     return response.status(401).json({ error: "token invalid" });
   }

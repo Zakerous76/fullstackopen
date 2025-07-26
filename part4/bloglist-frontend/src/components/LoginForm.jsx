@@ -1,8 +1,7 @@
-import React from "react";
 import { useState } from "react";
 import loginServices from "../services/login";
 import config from "../utils/config";
-import { useEffect } from "react";
+import blogsService from "../services/blogs";
 const LoginForm = ({ setUser }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -18,6 +17,7 @@ const LoginForm = ({ setUser }) => {
           JSON.stringify(user)
         );
         setUser(user);
+        blogsService.setToken(user);
         setUsername("");
         setPassword("");
       }
@@ -26,7 +26,7 @@ const LoginForm = ({ setUser }) => {
 
   return (
     <div>
-      <form action="post" onSubmit={handleLogin}>
+      <form method="post" onSubmit={handleLogin}>
         <label htmlFor="username">Username </label>
         <input
           type="text"

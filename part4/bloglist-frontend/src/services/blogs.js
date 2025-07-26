@@ -26,4 +26,14 @@ const create = async (blog) => {
   }
 };
 
-export default { getAll, create, setToken };
+const updateBlogLikes = async (blog) => {
+  const blogId = blog.id;
+  const newBlog = { ...blog, likes: blog.likes + 1, creator: blog.creator.id };
+  try {
+    const response = await axios.put(`${baseUrl}/${blogId}`, newBlog);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export default { getAll, create, updateBlogLikes, setToken };

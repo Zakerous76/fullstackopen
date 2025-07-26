@@ -15,8 +15,12 @@ const App = () => {
   });
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+  useEffect(async () => {
+    const getBlogs = await blogService.getAll();
+    getBlogs.sort((blog1, blog2) => {
+      return blog2.likes - blog1.likes;
+    });
+    setBlogs(getBlogs);
   }, []);
 
   useEffect(() => {
@@ -65,7 +69,7 @@ const App = () => {
       <div className="blog-list">
         {blogs.map((blog) => {
           try {
-            return <Blog key={blog.id} blog={blog} />;
+            return <Blog key={blog.id} blog={blog} setBlogs={setBlogs} />;
           } catch (error) {
             console.log(error);
           }

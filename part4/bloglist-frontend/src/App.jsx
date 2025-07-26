@@ -5,6 +5,7 @@ import NotificationComponent from "./components/NotificationComponent";
 import BlogForm from "./components/BlogForm";
 import blogService from "./services/blogs";
 import config from "./utils/config";
+import Togglable from "./components/Togglable";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -54,7 +55,9 @@ const App = () => {
               Log out
             </button>
           </p>
-          <BlogForm setBlogs={setBlogs} setErrorMessage={setErrorMessage} />
+          <Togglable buttonLabel="New Note">
+            <BlogForm setBlogs={setBlogs} setErrorMessage={setErrorMessage} />
+          </Togglable>
         </div>
       )}
 

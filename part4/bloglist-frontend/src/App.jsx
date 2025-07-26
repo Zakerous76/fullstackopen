@@ -56,6 +56,7 @@ const App = () => {
             </button>
           </p>
           <Togglable buttonLabel="New Note">
+            {/* already did that: 5.6 Blog List Frontend, step 6 */}
             <BlogForm setBlogs={setBlogs} setErrorMessage={setErrorMessage} />
           </Togglable>
         </div>

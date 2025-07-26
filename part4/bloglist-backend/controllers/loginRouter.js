@@ -9,6 +9,7 @@ loginRouter.post("/", async (request, response, next) => {
   const { username, password } = request.body;
   const user = await User.findOne({ username: username });
   if (!user) {
+    console.log({ error: `User with username '${username} does not exist'` });
     return response
       .status(404)
       .json({ error: `User with username '${username} does not exist'` });

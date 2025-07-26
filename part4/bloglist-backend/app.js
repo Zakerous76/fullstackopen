@@ -1,10 +1,10 @@
-const config = require("./utils/config");
 const express = require("express");
-const mongoose = require("mongoose");
 const logger = require("./utils/logger");
 const loginRouter = require("./controllers/loginRouter");
 const blogsRouter = require("./controllers/blogsRouter");
 const usersRouter = require("./controllers/usersRouter");
+const connectToDB = require("./utils/mongoTools").connectToDB;
+
 const {
   requestLogger,
   unknownEndpoint,
@@ -20,7 +20,7 @@ app.use(requestLogger);
 app.use(tokenExtractor);
 
 logger.info("Connecting to DB...");
-mongoose.connect(config.MONGODB_URI);
+connectToDB();
 
 app.use("/api/login", loginRouter);
 app.use("/api/blogs", userExtractor);

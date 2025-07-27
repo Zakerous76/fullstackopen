@@ -48,7 +48,6 @@ const tokenExtractor = (request, response, next) => {
 
 const userExtractor = (request, response, next) => {
   const authorization = request.get("authorization");
-  console.log("request.headers: ", request.headers);
   let authorizationString = null;
   request.user = null;
   if (authorization && authorization.includes("Bearer")) {

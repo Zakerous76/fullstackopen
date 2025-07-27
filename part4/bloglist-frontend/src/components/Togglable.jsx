@@ -23,4 +23,6 @@ const Togglable = (props) => {
   );
 };
 
+// I would have defined prop-types but they are depracted are not checked as of react 19
+
 export default Togglable;

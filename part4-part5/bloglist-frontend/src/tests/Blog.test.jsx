@@ -14,8 +14,10 @@ test("renders the blog's title and author but not its URL and the number of like
   const container = render(
     <Blog key={blogExample.id} blog={blogExample} setBlogs={setBlogsMockFunc} />
   ).container;
-  const div = container.querySelector(".defaultBlogView");
-  screen.debug(div);
-  screen.debug(setBlogsMockFunc.call);
+  const div = container.querySelector(".shownByDefault");
+  // screen.debug(div);
   expect(div).toHaveTextContent(`${blogExample.title} ${blogExample.author} `);
+
+  const div2 = container.querySelector(".hiddenByDefault");
+  expect(getComputedStyle(div2).display).toBe("none");
 });

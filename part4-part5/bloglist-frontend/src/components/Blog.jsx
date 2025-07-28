@@ -25,12 +25,14 @@ const Blog = ({ blog, setBlogs }) => {
     <div className="blog">
       <div style={hideWhenVisible} className="shownByDefault">
         {blog.title} {blog.author}{" "}
-        <button onClick={toggleShowDetails}>View</button>
+        <button onClick={toggleShowDetails} data-testid="showButton">
+          View
+        </button>
       </div>
       <div style={showWhenVisible} className="hiddenByDefault">
         {blog.title} <button onClick={toggleShowDetails}>Hide</button> <br />
         <a href="{blog.url}"> {blog.url}</a> <br />
-        {blog.likes}{" "}
+        <span>{blog.likes} </span>
         <button
           onClick={async () => {
             await blogsService.updateBlogLikes(blog);

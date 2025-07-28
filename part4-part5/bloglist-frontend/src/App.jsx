@@ -51,6 +51,28 @@ const App = () => {
     });
     setBlogs(updatedBlogs);
   };
+
+  const handleBlogSubmit = async ({ title, author, url }) => {
+    try {
+      const blog = await blogService.create({ title, author, url });
+      if (blog.code === "ERR_BAD_RESPONSE") {
+        throw blog;
+      }
+      setBlogs((prev) => prev.concat(blog));
+      setErrorMessage({
+        message: `A new Blog added: ${blog.title}`,
+        type: "info",
+      });
+      setTimeout(() => {
+        setErrorMessage({ message: null, type: null });
+      }, 5000);
+    } catch (error) {
+      setErrorMessage({
+        message: `Error, could not add the blog. Please log out and log in!`,
+        type: "error",
+      });
+    }
+  };
   return (
     <div>
       {user === null ? (
@@ -80,7 +102,7 @@ const App = () => {
           </p>
           <Togglable buttonLabel="New Note">
             {/* already did that: 5.6 Blog List Frontend, step 6 */}
-            <BlogForm setBlogs={setBlogs} setErrorMessage={setErrorMessage} />
+            <BlogForm handleBlogSubmit={handleBlogSubmit} />
           </Togglable>
         </div>
       )}

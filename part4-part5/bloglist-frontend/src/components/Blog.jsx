@@ -1,7 +1,7 @@
 import { useState } from "react";
 import blogsService from "../services/blogs";
 
-const Blog = ({ blog, setBlogs }) => {
+const Blog = ({ blog, updateLikes }) => {
   const [visible, setvisible] = useState(false);
   const [likes, setLikes] = useState(blog.likes);
 
@@ -33,19 +33,7 @@ const Blog = ({ blog, setBlogs }) => {
         {blog.title} <button onClick={toggleShowDetails}>Hide</button> <br />
         <a href="{blog.url}"> {blog.url}</a> <br />
         <span>{blog.likes} </span>
-        <button
-          onClick={async () => {
-            await blogsService.updateBlogLikes(blog);
-            const updatedBlogs = await blogsService.getAll();
-            updatedBlogs.sort((blog1, blog2) => {
-              return blog2.likes - blog1.likes;
-            });
-            setBlogs(updatedBlogs);
-          }}
-        >
-          like
-        </button>{" "}
-        <br />
+        <button onClick={() => updateLikes(blog)}>like</button> <br />
         {blog.author} <br />
         <button
           onClick={async () => {

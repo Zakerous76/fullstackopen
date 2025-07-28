@@ -42,6 +42,15 @@ const App = () => {
       blogService.setToken(userLocal);
     }
   }, []);
+
+  const updateLikes = async (blog) => {
+    await blogService.updateBlogLikes(blog);
+    const updatedBlogs = await blogService.getAll();
+    updatedBlogs.sort((blog1, blog2) => {
+      return blog2.likes - blog1.likes;
+    });
+    setBlogs(updatedBlogs);
+  };
   return (
     <div>
       {user === null ? (
@@ -79,7 +88,7 @@ const App = () => {
       <div className="blog-list">
         {blogs.map((blog) => {
           try {
-            return <Blog key={blog.id} blog={blog} setBlogs={setBlogs} />;
+            return <Blog key={blog.id} blog={blog} updateLikes={updateLikes} />;
           } catch (error) {
             console.log(error);
           }

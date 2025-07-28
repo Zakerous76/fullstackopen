@@ -19,7 +19,7 @@ describe("<Blog />", () => {
       <Blog
         key={blogExample.id}
         blog={blogExample}
-        setBlogs={setBlogsMockFunc}
+        updateLikes={setBlogsMockFunc}
       />
     ).container;
   });
@@ -31,7 +31,6 @@ describe("<Blog />", () => {
     );
 
     const div2 = container.querySelector(".hiddenByDefault");
-    screen.debug(div2);
     expect(getComputedStyle(div2).display).toBe("none");
   });
 
@@ -51,5 +50,21 @@ describe("<Blog />", () => {
     expect(getComputedStyle(div2).display).not.toBe("none");
     expect(screen.getByText(blogExample.url)).toBeInTheDocument();
     expect(screen.getByText(String(blogExample.likes))).toBeInTheDocument();
+  });
+
+  test("if the like button is clicked twice, the event handler the component received as props is called twice", async () => {
+    const user = userEvent.setup();
+    const div2 = container.querySelector(".hiddenByDefault");
+
+    const viewButton = screen.getByRole("button", { name: /View/i });
+    await user.click(viewButton);
+    expect(getComputedStyle(div2).display).not.toBe("none");
+
+    const likeButton = screen.getByRole("button", { name: /like/i });
+
+    await user.click(likeButton);
+    await user.click(likeButton);
+
+    expect(setBlogsMockFunc.mock.calls).toHaveLength(2);
   });
 });

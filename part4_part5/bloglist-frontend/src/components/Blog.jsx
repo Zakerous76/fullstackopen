@@ -23,7 +23,7 @@ const Blog = ({ blog, setBlogs }) => {
 
   return (
     <div className="blog">
-      <div style={hideWhenVisible}>
+      <div style={hideWhenVisible} className=".defaultBlogView">
         {blog.title} {blog.author}{" "}
         <button onClick={toggleShowDetails}>View</button>
       </div>

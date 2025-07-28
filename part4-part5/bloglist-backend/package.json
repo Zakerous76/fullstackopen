@@ -1,0 +1,22 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "a blog list",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env NODE_env=production node index.js",
+    "dev": "cross-env NODE_env=development node --watch index.js",
+    "test": "cross-env NODE_env=test node --test"
+  },
+  "author": "zakerous76",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.4",
+    "supertest": "^7.1.4"
+  }
+}

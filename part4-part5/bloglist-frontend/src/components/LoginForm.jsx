@@ -20,6 +20,7 @@ const LoginForm = ({ setUser, setErrorMessage }) => {
           JSON.stringify(user)
         );
         setUser(user);
+        console.log("user set: ", user);
         blogsService.setToken(user);
         setUsername("");
         setPassword("");

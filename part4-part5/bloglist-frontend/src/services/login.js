@@ -6,7 +6,7 @@ const login = async (credentials) => {
     const response = await axios.post(baseURL, credentials);
     return response.data;
   } catch (error) {
-    console.log("Error:", error);
+    console.log("/login.js Error:", error);
     throw error;
   }
 };

@@ -46,7 +46,7 @@ const deleteBlog = async (blog) => {
   try {
     const response = await axios.delete(`${baseUrl}/${blog.id}`, config);
   } catch (error) {
-    console.log(error);
+    console.log(`/blogs.js: ${error}`);
   }
 };
 

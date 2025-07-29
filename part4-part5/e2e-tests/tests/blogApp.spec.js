@@ -85,14 +85,43 @@ describe("Blog app", () => {
           await expect(
             page.getByText("test blog title test author")
           ).toBeVisible();
+          // how can i see the HTML of the test browser
+
           await page.getByTestId("showButton").click();
-
           page.on("dialog", async (dialog) => await dialog.accept());
-          await page.getByRole("button", { name: "Remove" }).click();
+          await expect(
+            page.getByRole("button", { name: "Remove" })
+          ).toBeVisible();
 
+          await page.getByRole("button", { name: "Remove" }).click();
           await expect(
             page.getByText("test blog title test author")
           ).not.toBeVisible();
+        });
+        describe("Another user logs in", () => {
+          beforeEach(async ({ page, request }) => {
+            await request.post("/api/users", {
+              data: {
+                name: "zaker",
+                username: "zakerous",
+                password: "salainen",
+              },
+            });
+
+            await page.getByRole("button", { name: "Log out" }).click();
+            await expect(
+              page.getByRole("heading", { name: "Log in to application" })
+            ).toBeVisible();
+
+            await page.goto("/");
+          });
+          test("only the creator of a blog can delete it", async ({ page }) => {
+            await loginWith(page, "zakerous", "salainen");
+            await page.getByTestId("showButton").click();
+            await expect(
+              page.getByRole("button", { name: "Remove" })
+            ).not.toBeVisible();
+          });
         });
       });
     });

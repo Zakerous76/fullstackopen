@@ -116,6 +116,7 @@ const App = () => {
                 blog={blog}
                 updateLikes={updateLikes}
                 setBlogs={setBlogs}
+                userID={user ? user.id : null}
               />
             );
           } catch (error) {

@@ -124,6 +124,71 @@ describe("Blog app", () => {
           });
         });
       });
+
+      describe("Multiple notes are created", () => {
+        beforeEach(async ({ page, request }) => {
+          await createNote(
+            page,
+            "test blog title 1",
+            "test author 1",
+            "test-url.com"
+          );
+          await createNote(
+            page,
+            "test blog title 2",
+            "test author 2",
+            "test-url.com"
+          );
+          await createNote(
+            page,
+            "test blog title 3",
+            "test author 3",
+            "test-url.com"
+          );
+        });
+        // test("all notes are visible", async ({ page }) => {
+        //   await expect(page.getByTestId("test blog title 1")).toBeVisible();
+        //   await expect(page.getByTestId("test blog title 2")).toBeVisible();
+        //   await expect(page.getByTestId("test blog title 3")).toBeVisible();
+        // });
+        test("notes are sorted based on the likes", async ({ page }) => {
+          await page
+            .getByTestId("test blog title 1")
+            .getByTestId("showButton")
+            .click();
+          await page
+            .getByTestId("test blog title 2")
+            .getByTestId("showButton")
+            .click();
+          await page
+            .getByTestId("test blog title 3")
+            .getByTestId("showButton")
+            .click();
+
+          await page.getByRole("button", { name: "like" }).first().click();
+          await page.waitForTimeout(1000);
+          await page.getByRole("button", { name: "like" }).nth(1).click();
+          await page.waitForTimeout(1000);
+          await page.getByRole("button", { name: "like" }).nth(1).click();
+          await page.waitForTimeout(1000);
+          await page.getByRole("button", { name: "like" }).nth(2).click();
+          await page.waitForTimeout(1000);
+          await page.getByRole("button", { name: "like" }).nth(2).click();
+          await page.waitForTimeout(1000);
+          await page.getByRole("button", { name: "like" }).nth(1).click();
+          await page.waitForTimeout(1000);
+
+          await expect(
+            page.getByText("test blog title 3 Hide test-")
+          ).toBeVisible();
+          await expect(
+            page.getByText("test blog title 2 Hide test-")
+          ).toBeVisible();
+          await expect(
+            page.getByText("test blog title 1 Hide test-")
+          ).toBeVisible();
+        });
+      });
     });
   });
 });

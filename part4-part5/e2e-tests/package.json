@@ -6,6 +6,7 @@
   "scripts": {
     "test": "npx playwright test --project=chromium",
     "test:report": "npx playwright show-report",
+    "test:headed": "npx playwright test --headed --project=chromium",
     "codegen": "npx playwright codegen http://localhost:5173"
   },
   "keywords": [],

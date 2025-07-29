@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { forwardRef } from "react";
+import { useImperativeHandle } from "react";
 
-const Togglable = (props) => {
+const Togglable = forwardRef((props, refs) => {
   const [visible, setVisible] = useState(false);
 
   const hideWhenVisible = { display: visible === true ? "none" : "" };
@@ -9,6 +11,10 @@ const Togglable = (props) => {
   const toggleVisible = () => {
     setVisible(!visible);
   };
+
+  useImperativeHandle(refs, () => {
+    return { toggleVisible };
+  });
 
   return (
     <div>
@@ -21,7 +27,7 @@ const Togglable = (props) => {
       </div>
     </div>
   );
-};
+});
 
 // I would have defined prop-types but they are depracted are not checked as of react 19
 

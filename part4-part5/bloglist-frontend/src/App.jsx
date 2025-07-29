@@ -6,6 +6,7 @@ import BlogForm from "./components/BlogForm";
 import blogService from "./services/blogs";
 import config from "./utils/config";
 import Togglable from "./components/Togglable";
+import { useRef } from "react";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -14,6 +15,7 @@ const App = () => {
     type: null,
   });
   const [user, setUser] = useState(null);
+  const toggleNewNoteVisibility = useRef();
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -59,6 +61,7 @@ const App = () => {
         throw blog;
       }
       setBlogs((prev) => prev.concat(blog));
+      toggleNewNoteVisibility.current.toggleVisible();
       setErrorMessage({
         message: `A new Blog added: ${blog.title}`,
         type: "info",
@@ -100,7 +103,7 @@ const App = () => {
               Log out
             </button>
           </p>
-          <Togglable buttonLabel="New Note">
+          <Togglable buttonLabel="New Note" ref={toggleNewNoteVisibility}>
             {/* already did that: 5.6 Blog List Frontend, step 6 */}
             <BlogForm handleBlogSubmit={handleBlogSubmit} />
           </Togglable>

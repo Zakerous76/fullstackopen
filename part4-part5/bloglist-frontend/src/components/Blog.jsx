@@ -24,7 +24,11 @@ const Blog = ({ blog, setBlogs, updateLikes, userID }) => {
   };
   return (
     <div className="blog">
-      <div style={hideWhenVisible} className="shownByDefault">
+      <div
+        style={hideWhenVisible}
+        className="shownByDefault"
+        data-testid={blog.title}
+      >
         {blog.title} {blog.author}{" "}
         <button onClick={toggleShowDetails} data-testid="showButton">
           View

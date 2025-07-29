@@ -10,6 +10,10 @@ const createNote = async (page, title, author, url) => {
   await page.getByRole("textbox", { name: "Author:" }).fill(author);
   await page.getByRole("textbox", { name: "URL:" }).fill(url);
   await page.getByRole("button", { name: "Create" }).click();
+
+  // ✅ Wait for the newly created blog to appear on the page
+  await page.waitForSelector(`text=${title}`);
+  await page.waitForLoadState("networkidle"); // wait for fetch/XHR to finish
 };
 
 export { loginWith, createNote };

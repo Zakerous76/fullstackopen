@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import blogsService from "../services/blogs";
+import { useState } from "react";
 
 const BlogForm = ({ handleBlogSubmit }) => {
   const [title, setTitle] = useState("");
@@ -10,8 +9,12 @@ const BlogForm = ({ handleBlogSubmit }) => {
     event.preventDefault();
     console.log("Form is submitted");
 
-    handleBlogSubmit({ title, author, url });
+    await handleBlogSubmit({ title, author, url });
+    setAuthor("");
+    setTitle("");
+    setUrl("");
   };
+
   return (
     <div>
       <form method="post" onSubmit={handleFormSubmit}>
@@ -19,6 +22,7 @@ const BlogForm = ({ handleBlogSubmit }) => {
         <input
           type="text"
           id="title"
+          value={title}
           onChange={({ target }) => {
             setTitle(target.value);
           }}
@@ -28,6 +32,7 @@ const BlogForm = ({ handleBlogSubmit }) => {
         <input
           type="text"
           id="author"
+          value={author}
           onChange={({ target }) => {
             setAuthor(target.value);
           }}
@@ -37,6 +42,7 @@ const BlogForm = ({ handleBlogSubmit }) => {
         <input
           type="text"
           id="url"
+          value={url}
           onChange={({ target }) => {
             setUrl(target.value);
           }}

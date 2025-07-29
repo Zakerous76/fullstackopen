@@ -11,4 +11,28 @@ describe("Blog app", () => {
     ).toBeVisible();
     await expect(page.getByText("Username Password Log in")).toBeVisible();
   });
+
+  describe("Login", () => {
+    test("fails with wrong credentials", async ({ page }) => {
+      await page.getByRole("textbox", { name: "Username" }).fill("wrongUser");
+      await page
+        .getByRole("textbox", { name: "Password" })
+        .fill("wrongPassword");
+      await expect(
+        page.getByRole("button", { name: "New Note" })
+      ).not.toBeVisible();
+    });
+    test("succeeds with correct credentials", async ({ page }) => {
+      await page.getByRole("textbox", { name: "Username" }).fill("rootTest3");
+      await page
+        .getByRole("textbox", { name: "Password" })
+        .fill("hiddenpassword");
+      await page.getByRole("button", { name: "Log in" }).click();
+      await expect(page.getByText("Welcome, undefined!")).toBeVisible();
+      await expect(page.getByText("is logged in Log out")).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: "New Note" })
+      ).toBeVisible();
+    });
+  });
 });

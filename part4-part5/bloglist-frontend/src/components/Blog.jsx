@@ -1,7 +1,7 @@
 import { useState } from "react";
 import blogsService from "../services/blogs";
 
-const Blog = ({ blog, updateLikes }) => {
+const Blog = ({ blog, setBlogs, updateLikes }) => {
   const [visible, setvisible] = useState(false);
   const [likes, setLikes] = useState(blog.likes);
 

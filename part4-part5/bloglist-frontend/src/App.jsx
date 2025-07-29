@@ -110,7 +110,14 @@ const App = () => {
       <div className="blog-list">
         {blogs.map((blog) => {
           try {
-            return <Blog key={blog.id} blog={blog} updateLikes={updateLikes} />;
+            return (
+              <Blog
+                key={blog.id}
+                blog={blog}
+                updateLikes={updateLikes}
+                setBlogs={setBlogs}
+              />
+            );
           } catch (error) {
             console.log(error);
           }

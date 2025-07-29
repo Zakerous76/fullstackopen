@@ -80,6 +80,20 @@ describe("Blog app", () => {
           await page.getByRole("button", { name: "like" }).click();
           await expect(page.getByText("1")).toBeVisible();
         });
+
+        test("the blog can be deleted", async ({ page }) => {
+          await expect(
+            page.getByText("test blog title test author")
+          ).toBeVisible();
+          await page.getByTestId("showButton").click();
+
+          page.on("dialog", async (dialog) => await dialog.accept());
+          await page.getByRole("button", { name: "Remove" }).click();
+
+          await expect(
+            page.getByText("test blog title test author")
+          ).not.toBeVisible();
+        });
       });
     });
   });

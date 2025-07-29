@@ -59,6 +59,28 @@ describe("Blog app", () => {
           page.getByText("test blog title test author")
         ).toBeVisible();
       });
+
+      describe("When a blog is created", () => {
+        beforeEach(async ({ page }) => {
+          await createNote(
+            page,
+            "test blog title",
+            "test author",
+            "test-url.com"
+          );
+        });
+
+        test("the blog can be liked", async ({ page }) => {
+          await expect(
+            page.getByText("test blog title test author")
+          ).toBeVisible();
+          await expect(page.getByTestId("showButton")).toBeVisible();
+          await page.getByTestId("showButton").click();
+          await expect(page.getByText("0")).toBeVisible();
+          await page.getByRole("button", { name: "like" }).click();
+          await expect(page.getByText("1")).toBeVisible();
+        });
+      });
     });
   });
 });

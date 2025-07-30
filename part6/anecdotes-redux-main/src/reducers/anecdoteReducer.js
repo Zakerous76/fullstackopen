@@ -19,6 +19,7 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject);
 
+// Actions: already have done that
 export const voteAction = (payload) => {
   return {
     type: "VOTE",

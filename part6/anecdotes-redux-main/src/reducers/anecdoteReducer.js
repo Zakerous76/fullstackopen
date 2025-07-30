@@ -26,6 +26,13 @@ export const voteAction = (payload) => {
   };
 };
 
+export const postAnecdoteAction = (anecdote) => {
+  return {
+    type: "CREATE",
+    payload: asObject(anecdote),
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "VOTE":
@@ -34,7 +41,8 @@ const reducer = (state = initialState, action) => {
           ? { ...action.payload, votes: action.payload.votes + 1 }
           : anecdote;
       });
-
+    case "CREATE":
+      return [...state, action.payload];
     default:
       break;
   }

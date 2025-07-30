@@ -34,15 +34,21 @@ export const postAnecdoteAction = (anecdote) => {
 };
 
 const reducer = (state = initialState, action) => {
+  let newState = null;
   switch (action.type) {
     case "VOTE":
-      return state.map((anecdote) => {
+      newState = state.map((anecdote) => {
         return anecdote.id === action.payload.id
           ? { ...action.payload, votes: action.payload.votes + 1 }
           : anecdote;
       });
+      newState.sort((a, b) => {
+        return b.votes - a.votes;
+      });
+      return newState;
     case "CREATE":
-      return [...state, action.payload];
+      newState = [...state, action.payload];
+      return newState;
     default:
       break;
   }

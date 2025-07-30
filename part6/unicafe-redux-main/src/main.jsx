@@ -12,7 +12,7 @@ const App = () => {
       type: "GOOD",
     });
   };
-
+  // Already did this, bre.
   const bad = () => {
     store.dispatch({
       type: "BAD",

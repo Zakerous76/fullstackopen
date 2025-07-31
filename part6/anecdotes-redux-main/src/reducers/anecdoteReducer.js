@@ -50,6 +50,11 @@ const reducer = (state = initialState, action) => {
     case "CREATE":
       newState = [...state, action.payload];
       return newState;
+
+    case "FILTER":
+      return state.filter((anecdote) => {
+        return anecdote.content.includes();
+      });
     default:
       break;
   }

@@ -1,4 +1,3 @@
-import React from "react";
 import { filterAnecdotes } from "../reducers/filterReducer";
 import { useDispatch } from "react-redux";
 

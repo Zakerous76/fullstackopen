@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 const Filter = () => {
   const dispatch = useDispatch();
   const handleFilter = (param) => {
-    console.log("param:", param.target.value);
     const filterValue = param.target.value;
     dispatch(filterAnecdotes(filterValue));
   };

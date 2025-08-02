@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import anecdoteService from "../services/anecdotes";
-import axios from "axios";
 
 const anecdoteSlice = createSlice({
   name: "anecdotes",

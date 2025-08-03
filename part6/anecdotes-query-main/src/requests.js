@@ -15,8 +15,12 @@ export const createAnecdote = async (content) => {
 };
 
 export const vote = async (anecdote) => {
-  const anecdoteId = anecdote.id;
-  const newAnecdote = { ...anecdote, votes: anecdote.votes + 1 };
-  const result = await axios.put(`${baseURL}/${anecdoteId}`, newAnecdote);
-  return result.data;
+  try {
+    const anecdoteId = anecdote.id;
+    const newAnecdote = { ...anecdote, votes: anecdote.votes + 1 };
+    const result = await axios.put(`${baseURL}/${anecdoteId}`, newAnecdote);
+    return result.data;
+  } catch (error) {
+    console.log("error from server:", error);
+  }
 };

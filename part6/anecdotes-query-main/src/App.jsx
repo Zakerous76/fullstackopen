@@ -3,8 +3,12 @@ import Notification from "./components/Notification";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAll, vote } from "./requests";
 import { anecdotesPlural } from "./constants";
+import { useContext } from "react";
+import NotificationContext from "./NotificationContext";
 
 const App = () => {
+  const [_, notificationDispatcher] = useContext(NotificationContext);
+
   const result = useQuery({
     queryKey: [anecdotesPlural],
     queryFn: getAll,
@@ -19,7 +23,6 @@ const App = () => {
       const newAnecdotes = anecdotes.map((anecdote) => {
         return anecdote.id === updatedAnecdote.id ? updatedAnecdote : anecdote;
       });
-      console.log("newAnecdotes: ", newAnecdotes);
 
       queryClient.setQueryData([anecdotesPlural], newAnecdotes);
     },
@@ -41,6 +44,17 @@ const App = () => {
 
   const handleVote = (anecdote) => {
     voteMutation.mutate(anecdote);
+    const actionShow = {
+      type: "SHOW",
+      payload: `anecdote '${anecdote.content}' voted`,
+    };
+    const actionHide = {
+      type: "HIDE",
+    };
+    notificationDispatcher(actionShow);
+    setTimeout(() => {
+      notificationDispatcher(actionHide);
+    }, 5000);
   };
 
   return (

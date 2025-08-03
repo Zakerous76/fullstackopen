@@ -20,7 +20,7 @@ const App = () => {
   }
 
   if (result.status === "error") {
-    return <div>anecdote service not available due to problems in server</div>;
+    return <h2>anecdote service not available due to problems in server</h2>;
   }
 
   const anecdotes = result.data;

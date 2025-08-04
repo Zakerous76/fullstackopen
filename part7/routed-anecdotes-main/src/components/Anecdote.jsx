@@ -9,7 +9,6 @@ const Anecdote = ({ anecdote }) => {
       <div>
         for more info see{" "}
         <a href={anecdote.info} target="_blank" rel="noreferrer">
-          {" "}
           {anecdote.info}
         </a>
       </div>

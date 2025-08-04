@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { BrowserRouter, Link, Routes, Route, useMatch } from "react-router-dom";
+import {
+  BrowserRouter,
+  Link,
+  Routes,
+  Route,
+  useMatch,
+  useNavigate,
+} from "react-router-dom";
 
 const padding = {
   paddingRight: 5,
@@ -119,7 +126,21 @@ const CreateNew = (props) => {
   );
 };
 
+const NotificationComp = ({ notification }) => {
+  const style = {
+    background: "lightgrey",
+    borderStyle: "solid",
+    borderRadius: 2,
+    padding: 10,
+    margin: 10,
+  };
+  console.log("notification:", notification);
+  return <div style={style}>{notification}</div>;
+};
+
 const App = () => {
+  const navigate = useNavigate();
+
   const [anecdotes, setAnecdotes] = useState([
     {
       content: "If it hurts, do it more often",
@@ -146,6 +167,11 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000);
     setAnecdotes(anecdotes.concat(anecdote));
+    setNotification(`a new anecdote has been created: "${anecdote.content}" `);
+    setTimeout(() => {
+      setNotification("");
+    }, 5000);
+    navigate("/");
   };
 
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
@@ -174,6 +200,11 @@ const App = () => {
         <Link style={padding} to="/about">
           about
         </Link>
+      </div>
+      <div>
+        {notification === "" ? null : (
+          <NotificationComp notification={notification} />
+        )}
       </div>
       <Routes>
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />

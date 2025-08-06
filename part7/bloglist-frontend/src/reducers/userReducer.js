@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 
+// 7.13: Redux, Step 4
 const userSlice = createSlice({
   name: "user",
   initialState: null,

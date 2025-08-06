@@ -19,6 +19,7 @@ import { setUser } from "./reducers/userReducer"
 
 const App = () => {
   const dispatch = useDispatch()
+  // 7.13: Redux, Step 4
   const [user, blogs] = useSelector(({ user, blogs }) => {
     return [user, blogs]
   })
@@ -51,10 +52,6 @@ const App = () => {
       blogService.setToken(userLocal)
     }
   }, [])
-
-  const updateLikes = (blog) => {
-    dispatch(updateBlogLikes(blog))
-  }
 
   const handleBlogSubmit = ({ title, author, url }) => {
     try {
@@ -114,14 +111,7 @@ const App = () => {
       <div className="blog-list">
         {blogs.map((blog) => {
           try {
-            return (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                updateLikes={updateLikes}
-                userID={user ? user.id : null}
-              />
-            )
+            return <Blog key={blog.id} blog={blog} />
           } catch (error) {
             console.log(error)
           }

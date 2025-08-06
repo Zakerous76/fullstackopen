@@ -1,9 +1,11 @@
-import { useState } from "react";
-import blogsService from "../services/blogs";
+import { useState } from "react"
+import blogsService from "../services/blogs"
+import { useDispatch } from "react-redux"
 
-const Blog = ({ blog, setBlogs, updateLikes, userID }) => {
-  const [visible, setvisible] = useState(false);
-  const [likes, setLikes] = useState(blog.likes);
+const Blog = ({ blog, updateLikes, userID }) => {
+  const dispatch = useDispatch()
+
+  const [visible, setvisible] = useState(false)
 
   const blogStyle = {
     paddingTop: 10,
@@ -12,16 +14,14 @@ const Blog = ({ blog, setBlogs, updateLikes, userID }) => {
     border: "solid",
     borderWidth: 1,
     marginBottom: 5,
-  };
+  }
 
-  const hideWhenVisible = { ...blogStyle, display: visible ? "none" : "" };
-  const showWhenVisible = { ...blogStyle, display: visible ? "" : "none" };
+  const hideWhenVisible = { ...blogStyle, display: visible ? "none" : "" }
+  const showWhenVisible = { ...blogStyle, display: visible ? "" : "none" }
 
   const toggleShowDetails = () => {
-    console.log("/Blogs.jsx - toggleShowDetails: userID:", userID);
-    console.log("/Blogs.jsx - toggleShowDetails: blog", blog);
-    setvisible(!visible);
-  };
+    setvisible(!visible)
+  }
   return (
     <div className="blog">
       <div
@@ -45,15 +45,11 @@ const Blog = ({ blog, setBlogs, updateLikes, userID }) => {
             onClick={async () => {
               const answer = window.confirm(
                 `Are you sure you want to remove: ${blog.title}?`
-              );
+              )
               if (answer) {
-                await blogsService.deleteBlog(blog);
-
-                const updatedBlogs = await blogsService.getAll();
-                updatedBlogs.sort((blog1, blog2) => {
-                  return blog2.likes - blog1.likes;
-                });
-                setBlogs(updatedBlogs);
+                await blogsService.deleteBlog(blog)
+                const updatedBlogs = await blogsService.getAll()
+                dispatch(setBlogs(updatedBlogs))
               }
             }}
           >
@@ -64,7 +60,7 @@ const Blog = ({ blog, setBlogs, updateLikes, userID }) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Blog;
+export default Blog

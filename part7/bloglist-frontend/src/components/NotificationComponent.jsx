@@ -3,7 +3,6 @@ const NotificationComponent = () => {
   const message = useSelector(({ notification }) => {
     return notification
   })
-  console.log("message:", message)
 
   if (message.message === null) {
     return null

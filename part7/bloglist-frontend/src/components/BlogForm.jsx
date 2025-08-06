@@ -1,57 +1,37 @@
-import { useState } from "react";
+import { useField } from "../custom-hooks/useHooks"
 
 const BlogForm = ({ handleBlogSubmit }) => {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
+  const title = useField("text")
+  const author = useField("text")
+  const url = useField("text")
 
   const handleFormSubmit = async (event) => {
-    event.preventDefault();
-    console.log("Form is submitted");
+    event.preventDefault()
+    console.log("Form is submitted")
 
-    await handleBlogSubmit({ title, author, url });
-    setAuthor("");
-    setTitle("");
-    setUrl("");
-  };
+    await handleBlogSubmit({
+      title: title.value,
+      author: author.value,
+      url: url.value,
+    })
+  }
 
   return (
     <div>
       <form method="post" onSubmit={handleFormSubmit}>
         <label htmlFor="title">Title: </label>
-        <input
-          type="text"
-          id="title"
-          value={title}
-          onChange={({ target }) => {
-            setTitle(target.value);
-          }}
-        ></input>
+        <input {...title}></input>
         <br />
         <label htmlFor="author">Author: </label>
-        <input
-          type="text"
-          id="author"
-          value={author}
-          onChange={({ target }) => {
-            setAuthor(target.value);
-          }}
-        ></input>
+        <input {...author}></input>
         <br />
         <label htmlFor="url">URL: </label>
-        <input
-          type="text"
-          id="url"
-          value={url}
-          onChange={({ target }) => {
-            setUrl(target.value);
-          }}
-        ></input>
+        <input {...url}></input>
         <br />
         <button type="submit">Create</button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default BlogForm;
+export default BlogForm

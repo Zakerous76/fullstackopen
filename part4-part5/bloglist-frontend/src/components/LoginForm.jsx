@@ -1,44 +1,43 @@
-import { useState } from "react";
-import loginServices from "../services/login";
-import config from "../utils/config";
-import blogsService from "../services/blogs";
+import { useState } from "react"
+import loginServices from "../services/login"
+import config from "../utils/config"
+import blogsService from "../services/blogs"
 const LoginForm = ({ setUser, setErrorMessage }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
 
   const handleLogin = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
-      const user = await loginServices.login({ username, password });
+      const user = await loginServices.login({ username, password })
       if (user.code === "ERR_BAD_REQUEST") {
-        throw user;
+        throw user
       }
       if (user) {
         window.localStorage.setItem(
           config.localStorageUserKey,
           JSON.stringify(user)
-        );
-        setUser(user);
-        console.log("user set: ", user);
-        blogsService.setToken(user);
-        setUsername("");
-        setPassword("");
-        setErrorMessage({ message: `Welcome, ${user.name}!`, type: "info" });
+        )
+        setUser(user)
+        blogsService.setToken(user)
+        setUsername("")
+        setPassword("")
+        setErrorMessage({ message: `Welcome, ${user.name}!`, type: "info" })
         setTimeout(() => {
-          setErrorMessage({ message: null, type: null });
-        }, 5000);
+          setErrorMessage({ message: null, type: null })
+        }, 5000)
       }
     } catch (error) {
       setErrorMessage({
         message: `Error, ${error.response.data.error}!`,
         type: "error",
-      });
+      })
       setTimeout(() => {
-        setErrorMessage({ message: null, type: null });
-      }, 5000);
+        setErrorMessage({ message: null, type: null })
+      }, 5000)
     }
-  };
+  }
 
   return (
     <div>
@@ -65,7 +64,7 @@ const LoginForm = ({ setUser, setErrorMessage }) => {
         <button type="submit">Log in</button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default LoginForm;
+export default LoginForm

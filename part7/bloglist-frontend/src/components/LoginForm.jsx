@@ -32,7 +32,6 @@ const LoginForm = () => {
           JSON.stringify(user)
         )
         dispatch(setUser(user))
-        console.log("user set: ", user)
         blogsService.setToken(user)
 
         notificationDispatcher({
@@ -47,7 +46,6 @@ const LoginForm = () => {
         }, 5000)
       }
     } catch (error) {
-      console.log("Error from Login.jsx:", error)
       notificationDispatcher({
         type: "SHOW",
         payload: {

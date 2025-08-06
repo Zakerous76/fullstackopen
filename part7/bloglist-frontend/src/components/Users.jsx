@@ -1,3 +1,4 @@
+import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
 import { useSelector } from "react-redux"
 import { Link } from "react-router"
 
@@ -6,25 +7,25 @@ const Users = () => {
   return (
     <div>
       <h2>Users</h2>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>Blogs Created</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell>Blogs Created</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {allUsers.map((user) => (
-            <tr key={user.id}>
-              <td>
+            <TableRow key={user.id}>
+              <TableCell>
                 {" "}
                 <Link to={`/users/${user.id}`}>{user.name}</Link>
-              </td>
-              <td>{user.blogs.length}</td>
-            </tr>
+              </TableCell>
+              <TableCell>{user.blogs.length}</TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   )
 }

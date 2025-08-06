@@ -1,5 +1,4 @@
 import { useEffect } from "react"
-import BlogOld from "./components/BlogOld"
 import LoginForm from "./components/LoginForm"
 import NotificationComponent from "./components/NotificationComponent"
 import BlogForm from "./components/BlogForm"
@@ -17,6 +16,15 @@ import Users from "./components/Users"
 import Blogs from "./components/Blogs"
 import User from "./components/User"
 import Blog from "./components/Blog"
+
+import {
+  AppBar,
+  Button,
+  Container,
+  IconButton,
+  Paper,
+  Toolbar,
+} from "@mui/material"
 
 const App = () => {
   const dispatch = useDispatch()
@@ -73,31 +81,44 @@ const App = () => {
         return blog.id == targetBlogMatch.params.id
       })
     : null
+
   return (
-    <div>
-      <div className="navigation">
-        <Link style={padding} to="/">
-          Blogs
-        </Link>
-        <Link style={padding} to="/users">
-          Users
-        </Link>
-        {loggedInUser !== null ? (
-          <span>
-            {loggedInUser.name} is logged in{" "}
-            <button
-              onClick={() => {
-                dispatch(setUser(null))
-                window.localStorage.removeItem(config.localStorageUserKey)
-              }}
-            >
-              Log out
-            </button>
-          </span>
-        ) : (
-          <></>
-        )}
-      </div>
+    <Container>
+      <AppBar position="static">
+        <Toolbar>
+          <Button color="inherit" component={Link} to="/">
+            Blogs
+          </Button>
+          <Button color="inherit" component={Link} to="/users">
+            Users
+          </Button>
+
+          {loggedInUser !== null ? (
+            <span>
+              <em>{loggedInUser.name} is logged in </em>
+
+              <Button
+                variant="contained"
+                color="primary"
+                style={{
+                  background: "white",
+                  color: "blue",
+                  padding: 3,
+                  fontSize: 10,
+                }}
+                onClick={() => {
+                  dispatch(setUser(null))
+                  window.localStorage.removeItem(config.localStorageUserKey)
+                }}
+              >
+                Log out
+              </Button>
+            </span>
+          ) : (
+            <></>
+          )}
+        </Toolbar>
+      </AppBar>
 
       <div>
         {loggedInUser === null ? (
@@ -110,29 +131,33 @@ const App = () => {
           <div className="create-blog-form">
             <NotificationComponent />
             <h2>blogs</h2>
-            <Togglable buttonLabel="New Note" ref={toggleNewNoteVisibility}>
-              {/* already did that: 5.6 Blog List Frontend, step 6 */}
-              <BlogForm toggleNewNoteVisibility={toggleNewNoteVisibility} />
-            </Togglable>
+            <Paper style={{ paddingTop: 20 }}>
+              <Togglable buttonLabel="New Note" ref={toggleNewNoteVisibility}>
+                {/* already did that: 5.6 Blog List Frontend, step 6 */}
+                <BlogForm toggleNewNoteVisibility={toggleNewNoteVisibility} />
+              </Togglable>
+            </Paper>
           </div>
         )}
 
         <div>
-          <Routes>
-            <Route path="/" element={<Blogs blogs={blogs} />} />
-            <Route path="/users" element={<Users />} />
-            <Route
-              path="/users/:id"
-              element={<User targetUser={targetUser} />}
-            />
-            <Route
-              path="/blogs/:id"
-              element={<Blog targetBlog={targetBlog} />}
-            />
-          </Routes>
+          <Paper style={{ marginTop: 50, paddingLeft: 5, paddingTop: 1 }}>
+            <Routes>
+              <Route path="/" element={<Blogs blogs={blogs} />} />
+              <Route path="/users" element={<Users />} />
+              <Route
+                path="/users/:id"
+                element={<User targetUser={targetUser} />}
+              />
+              <Route
+                path="/blogs/:id"
+                element={<Blog targetBlog={targetBlog} />}
+              />
+            </Routes>
+          </Paper>
         </div>
       </div>
-    </div>
+    </Container>
   )
 }
 

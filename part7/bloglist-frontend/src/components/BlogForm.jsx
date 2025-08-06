@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux"
 import { useField } from "../custom-hooks/useHooks"
 import { setNotification } from "../reducers/notificationReducer"
 import { createNewBlog } from "../reducers/blogsReducer"
+import { Button, TextField } from "@mui/material"
 
 const BlogForm = ({ toggleNewNoteVisibility }) => {
   const title = useField("text", "title")
@@ -13,16 +14,16 @@ const BlogForm = ({ toggleNewNoteVisibility }) => {
   const handleFormSubmit = async (event) => {
     event.preventDefault()
     const blog = {
-      title: title.value,
-      author: author.value,
-      url: url.value,
+      title: title.inputProps.value,
+      author: author.inputProps.value,
+      url: url.inputProps.value,
     }
     try {
       dispatch(createNewBlog(blog))
       toggleNewNoteVisibility.current.toggleVisible()
       dispatch(
         setNotification({
-          message: `A new Blog added: ${title.value}`,
+          message: `A new Blog added: ${title.inputProps.value}`,
           type: "info",
           time_s: 5,
         })
@@ -37,21 +38,26 @@ const BlogForm = ({ toggleNewNoteVisibility }) => {
         })
       )
     }
+    title.reset()
+    author.reset()
+    url.reset()
   }
 
   return (
     <div>
       <form method="post" onSubmit={handleFormSubmit}>
-        <label htmlFor="title">Title: </label>
-        <input {...title}></input>
-        <br />
-        <label htmlFor="author">Author: </label>
-        <input {...author}></input>
-        <br />
-        <label htmlFor="url">URL: </label>
-        <input {...url}></input>
-        <br />
-        <button type="submit">Create</button>
+        <div>
+          <TextField label="title" {...title.inputProps} />
+        </div>
+        <div>
+          <TextField label="author" {...author.inputProps} />
+        </div>
+        <div>
+          <TextField label="url" {...url.inputProps} />
+        </div>
+        <Button variant="contained" color="primary" type="submit">
+          Create
+        </Button>
       </form>
     </div>
   )

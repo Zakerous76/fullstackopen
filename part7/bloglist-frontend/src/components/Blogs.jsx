@@ -15,7 +15,7 @@ const Blogs = ({ blogs }) => {
         try {
           // return <Blog key={blog.id} blog={blog} />
           return (
-            <div style={blogStyle}>
+            <div style={blogStyle} key={blog.id}>
               <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
             </div>
           )

@@ -16,7 +16,6 @@ export const { setAllUsers } = allUsersSlice.actions
 export const getAllUsers = () => {
   return async (dispatch) => {
     const users = await allUsersService.getAllUsers()
-    console.log(users)
     dispatch(setAllUsers(users))
   }
 }

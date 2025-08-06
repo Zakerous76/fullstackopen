@@ -5,6 +5,7 @@ import blogsService from "../services/blogs"
 import { setNotification } from "../reducers/notificationReducer"
 import { setUser } from "../reducers/userReducer"
 import { useField } from "../custom-hooks/useHooks"
+import { Button, TextField } from "@mui/material"
 
 const LoginForm = () => {
   const username = useField("text", "username")
@@ -15,8 +16,8 @@ const LoginForm = () => {
     try {
       // Login
       const user = await loginServices.login({
-        username: username.value,
-        password: password.value,
+        username: username.inputProps.value,
+        password: password.inputProps.value,
       })
       if (user.code === "ERR_BAD_REQUEST") {
         throw user
@@ -55,12 +56,20 @@ const LoginForm = () => {
   return (
     <div>
       <form method="post" onSubmit={handleLogin}>
-        <label htmlFor="username">Username </label>
-        <input {...username} /> <br />
-        <label htmlFor="password">Password </label>
-        <input {...password} placeholder="*********" />
-        <br />
-        <button type="submit">Log in</button>
+        <div>
+          <TextField label="username" {...username.inputProps} />
+        </div>
+        <div>
+          <TextField
+            label="password"
+            {...password.inputProps}
+            placeholder="*********"
+          />
+        </div>
+
+        <Button color="primary" variant="contained" type="submit">
+          Log in
+        </Button>
       </form>
     </div>
   )

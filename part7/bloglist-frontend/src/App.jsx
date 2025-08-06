@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import Blog from "./components/Blog"
 import LoginForm from "./components/LoginForm"
 import NotificationComponent from "./components/NotificationComponent"
@@ -9,13 +9,12 @@ import { useDispatch, useSelector } from "react-redux"
 import Togglable from "./components/Togglable"
 import { useRef } from "react"
 import { setNotification } from "./reducers/notificationReducer"
-import {
-  createNewBlog,
-  fetchBlogs,
-  updateBlogLikes,
-} from "./reducers/blogsReducer"
-
+import { fetchBlogs } from "./reducers/blogsReducer"
+import { getAllUsers } from "./reducers/allUsersReducer"
 import { setUser } from "./reducers/userReducer"
+import { Routes, Route, Link } from "react-router"
+import Users from "./components/Users"
+import Blogs from "./components/Blogs"
 
 const App = () => {
   const dispatch = useDispatch()
@@ -30,6 +29,7 @@ const App = () => {
   useEffect(() => {
     try {
       dispatch(fetchBlogs())
+      dispatch(getAllUsers())
     } catch (error) {
       console.error("Error fetching blogs:", error)
       dispatch(
@@ -52,70 +52,65 @@ const App = () => {
       blogService.setToken(userLocal)
     }
   }, [])
-
-  const handleBlogSubmit = ({ title, author, url }) => {
-    try {
-      dispatch(createNewBlog({ title, author, url }))
-      toggleNewNoteVisibility.current.toggleVisible()
-      dispatch(
-        setNotification({
-          message: `A new Blog added: ${title}`,
-          type: "info",
-          time_s: 5,
-        })
-      )
-    } catch (error) {
-      dispatch(
-        setNotification({
-          message: `Error, could not add the blog. Please log out and log in!`,
-          type: "error",
-          time_s: 5,
-        })
-      )
-    }
+  const padding = {
+    padding: 10,
   }
+
   return (
     <div>
-      {user === null ? (
-        <div className="login-form">
-          <NotificationComponent />
+      <div className="navigation">
+        <Link style={padding} to="/blogs">
+          Blogs
+        </Link>
+        <Link style={padding} to="/users">
+          Users
+        </Link>
+      </div>
 
-          <h2>Log in to application</h2>
-          <LoginForm />
-        </div>
-      ) : (
-        <div className="create-blog-form">
-          <NotificationComponent />
+      <div>
+        {user === null ? (
+          <div className="login-form">
+            <NotificationComponent />
 
-          <h2>blogs</h2>
+            <h2>Log in to application</h2>
+            <LoginForm />
+          </div>
+        ) : (
+          <div className="create-blog-form">
+            <NotificationComponent />
 
-          <p>
-            {user.name} is logged in{" "}
-            <button
-              onClick={() => {
-                dispatch(setUser(null))
-                window.localStorage.removeItem(config.localStorageUserKey)
+            <h2>blogs</h2>
+
+            <p>
+              {user.name} is logged in{" "}
+              <button
+                onClick={() => {
+                  dispatch(setUser(null))
+                  window.localStorage.removeItem(config.localStorageUserKey)
+                }}
+              >
+                Log out
+              </button>
+            </p>
+            <Togglable buttonLabel="New Note" ref={toggleNewNoteVisibility}>
+              {/* already did that: 5.6 Blog List Frontend, step 6 */}
+              <BlogForm toggleNewNoteVisibility={toggleNewNoteVisibility} />
+            </Togglable>
+          </div>
+        )}
+
+        <div>
+          <Routes>
+            <Route path="/blogs" element={<Blogs blogs={blogs} />} />
+            <Route path="/users" element={<Users />} />
+            <Route
+              path="/blogs/:id"
+              element={() => {
+                return
               }}
-            >
-              {" "}
-              Log out
-            </button>
-          </p>
-          <Togglable buttonLabel="New Note" ref={toggleNewNoteVisibility}>
-            {/* already did that: 5.6 Blog List Frontend, step 6 */}
-            <BlogForm handleBlogSubmit={handleBlogSubmit} />
-          </Togglable>
+            />
+          </Routes>
         </div>
-      )}
-
-      <div className="blog-list">
-        {blogs.map((blog) => {
-          try {
-            return <Blog key={blog.id} blog={blog} />
-          } catch (error) {
-            console.log(error)
-          }
-        })}
       </div>
     </div>
   )

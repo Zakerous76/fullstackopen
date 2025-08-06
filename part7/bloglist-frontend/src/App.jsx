@@ -52,10 +52,6 @@ const App = () => {
     }
   }, [])
 
-  const updateLikes = (blog) => {
-    dispatch(updateBlogLikes(blog))
-  }
-
   const handleBlogSubmit = ({ title, author, url }) => {
     try {
       dispatch(createNewBlog({ title, author, url }))
@@ -114,14 +110,7 @@ const App = () => {
       <div className="blog-list">
         {blogs.map((blog) => {
           try {
-            return (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                updateLikes={updateLikes}
-                userID={user ? user.id : null}
-              />
-            )
+            return <Blog key={blog.id} blog={blog} />
           } catch (error) {
             console.log(error)
           }

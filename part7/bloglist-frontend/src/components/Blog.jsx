@@ -1,9 +1,11 @@
 import { useState } from "react"
 import blogsService from "../services/blogs"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { fetchBlogs, updateBlogLikes } from "../reducers/blogsReducer"
 
-const Blog = ({ blog, updateLikes, userID }) => {
+const Blog = ({ blog }) => {
   const dispatch = useDispatch()
+  const userID = useSelector(({ user }) => (user ? user.id : null))
 
   const [visible, setvisible] = useState(false)
 
@@ -38,7 +40,11 @@ const Blog = ({ blog, updateLikes, userID }) => {
         {blog.title} <button onClick={toggleShowDetails}>Hide</button> <br />
         <a href={blog.url}> {blog.url}</a> <br />
         <span>{blog.likes} </span>
-        <button onClick={() => updateLikes(blog)}>like</button> <br />
+        {/* users can like */}
+        <button onClick={() => dispatch(updateBlogLikes(blog))}>
+          like
+        </button>{" "}
+        <br />
         {blog.author} <br />
         {userID === (blog.creator.id ? blog.creator.id : blog.creator) ? (
           <button
@@ -47,9 +53,9 @@ const Blog = ({ blog, updateLikes, userID }) => {
                 `Are you sure you want to remove: ${blog.title}?`
               )
               if (answer) {
+                // users can delete
                 await blogsService.deleteBlog(blog)
-                const updatedBlogs = await blogsService.getAll()
-                dispatch(setBlogs(updatedBlogs))
+                dispatch(fetchBlogs())
               }
             }}
           >

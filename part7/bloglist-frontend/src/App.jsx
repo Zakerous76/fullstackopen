@@ -7,17 +7,17 @@ import blogService from "./services/blogs"
 import config from "./utils/config"
 import Togglable from "./components/Togglable"
 import { useRef } from "react"
-import NotificationContext from "./NotificationContext"
+import NotificationContext from "./contexts/NotificationContext"
 import { useContext } from "react"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
+import UserContext from "./contexts/UserContext"
 
 const App = () => {
   const [_, notificationDispatcher] = useContext(NotificationContext)
-  const [user, setUser] = useState(null)
   const toggleNewNoteVisibility = useRef()
   const queryClient = useQueryClient()
+  const [user, userDispatcher] = useContext(UserContext)
 
   // Logging in User
   useEffect(() => {
@@ -25,7 +25,7 @@ const App = () => {
       window.localStorage.getItem(config.localStorageUserKey)
     )
     if (userLocal) {
-      setUser(userLocal)
+      userDispatcher(userLocal)
       blogService.setToken(userLocal)
     }
   }, [])
@@ -90,6 +90,8 @@ const App = () => {
   const handleBlogSubmit = ({ title, author, url }) => {
     newBlogMutation.mutate({ title, author, url })
   }
+  console.log("app.jsx, user:", user)
+  console.log("app.jsx, typeof user:", typeof user)
   return (
     <div>
       {user === null ? (
@@ -97,7 +99,7 @@ const App = () => {
           <NotificationComponent />
 
           <h2>Log in to application</h2>
-          <LoginForm setUser={setUser} />
+          <LoginForm />
         </div>
       ) : (
         <div className="create-blog-form">
@@ -109,8 +111,7 @@ const App = () => {
             {user.name} is logged in{" "}
             <button
               onClick={() => {
-                setUser(null)
-                window.localStorage.removeItem(config.localStorageUserKey)
+                userDispatcher({ type: "LOGOUT" })
               }}
             >
               {" "}

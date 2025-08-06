@@ -1,52 +1,35 @@
-import loginServices from "../services/login"
-import config from "../utils/config"
-import blogsService from "../services/blogs"
-import { useField } from "../custom-hooks/useHooks"
-import NotificationContext from "../NotificationContext"
 import { useContext } from "react"
+import UserContext from "../contexts/UserContext"
+import NotificationContext from "../contexts/NotificationContext"
+import loginService from "../services/login"
 
-const LoginForm = ({ setUser }) => {
-  const [_, notificationDispatcher] = useContext(NotificationContext)
+const LoginForm = () => {
+  const [_, userDispatcher] = useContext(UserContext)
+  const [__, notificationDispatcher] = useContext(NotificationContext)
 
-  const username = useField("text", "username")
-  const password = useField("password", "password")
   const handleLogin = async (event) => {
     event.preventDefault()
+    const username = event.target.username.value
+    const password = event.target.password.value
+
     try {
-      // Login
-      const user = await loginServices.login({
-        username: username.value,
-        password: password.value,
+      const user = await loginService.login({ username, password })
+      userDispatcher({ type: "LOGIN", payload: user })
+      notificationDispatcher({
+        type: "SHOW",
+        payload: {
+          message: `Welcome, ${user.name}!`,
+          type: "info",
+        },
       })
-      if (user.code === "ERR_BAD_REQUEST") {
-        throw user
-      }
-
-      // Save the user on the browser storage
-      if (user) {
-        window.localStorage.setItem(
-          config.localStorageUserKey,
-          JSON.stringify(user)
-        )
-        setUser(user)
-        blogsService.setToken(user)
-
-        notificationDispatcher({
-          type: "SHOW",
-          payload: {
-            message: `Welcome, ${user.name}!`,
-            type: "info",
-          },
-        })
-        setTimeout(() => {
-          notificationDispatcher({ type: "HIDE" })
-        }, 5000)
-      }
+      setTimeout(() => {
+        notificationDispatcher({ type: "HIDE" })
+      }, 5000)
     } catch (error) {
       notificationDispatcher({
         type: "SHOW",
         payload: {
-          message: `Error, ${error.response.data.error}!`,
+          message: "Login failed. Check your credentials.",
           type: "error",
         },
       })
@@ -57,16 +40,15 @@ const LoginForm = ({ setUser }) => {
   }
 
   return (
-    <div>
-      <form method="post" onSubmit={handleLogin}>
-        <label htmlFor="username">Username </label>
-        <input {...username} /> <br />
-        <label htmlFor="password">Password </label>
-        <input {...password} placeholder="*********" />
-        <br />
-        <button type="submit">Log in</button>
-      </form>
-    </div>
+    <form onSubmit={handleLogin}>
+      <div>
+        username <input name="username" />
+      </div>
+      <div>
+        password <input name="password" type="password" />
+      </div>
+      <button type="submit">Login</button>
+    </form>
   )
 }
 

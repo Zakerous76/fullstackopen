@@ -83,6 +83,21 @@ const App = () => {
         <Link style={padding} to="/users">
           Users
         </Link>
+        {loggedInUser !== null ? (
+          <span>
+            {loggedInUser.name} is logged in{" "}
+            <button
+              onClick={() => {
+                dispatch(setUser(null))
+                window.localStorage.removeItem(config.localStorageUserKey)
+              }}
+            >
+              Log out
+            </button>
+          </span>
+        ) : (
+          <></>
+        )}
       </div>
 
       <div>
@@ -96,17 +111,6 @@ const App = () => {
           <div className="create-blog-form">
             <NotificationComponent />
             <h2>blogs</h2>
-            <p>
-              {loggedInUser.name} is logged in{" "}
-              <button
-                onClick={() => {
-                  dispatch(setUser(null))
-                  window.localStorage.removeItem(config.localStorageUserKey)
-                }}
-              >
-                Log out
-              </button>
-            </p>
             <Togglable buttonLabel="New Note" ref={toggleNewNoteVisibility}>
               {/* already did that: 5.6 Blog List Frontend, step 6 */}
               <BlogForm toggleNewNoteVisibility={toggleNewNoteVisibility} />

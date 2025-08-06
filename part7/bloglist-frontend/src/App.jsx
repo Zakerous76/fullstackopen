@@ -1,51 +1,35 @@
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import Blog from "./components/Blog"
 import LoginForm from "./components/LoginForm"
 import NotificationComponent from "./components/NotificationComponent"
 import BlogForm from "./components/BlogForm"
 import blogService from "./services/blogs"
 import config from "./utils/config"
-import { useDispatch, useSelector } from "react-redux"
 import Togglable from "./components/Togglable"
 import { useRef } from "react"
-import { createNewBlog, fetchBlogs } from "./reducers/blogsReducer"
 import NotificationContext from "./NotificationContext"
-import { setUser } from "./reducers/userReducer"
 import { useContext } from "react"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
 
 const App = () => {
   const [_, notificationDispatcher] = useContext(NotificationContext)
-
-  const result = useQuery({
-    queryKey: ["blogs"],
-    queryFn: blogService.getAll,
-    retry: 1,
-    refetchOnWindowFocus: false,
-  })
-
-  if (result.status === "pending") {
-    return (
-      <div>
-        <h3>loading...</h3>
-      </div>
-    )
-  }
-
-  if (result.status === "error") {
-    return <h2>blogs service not available due to problems in server</h2>
-  }
-
-  const blogs = result.data
-
-  const dispatch = useDispatch()
-  const user = useSelector(({ user }) => {
-    return user
-  })
-
+  const [user, setUser] = useState(null)
   const toggleNewNoteVisibility = useRef()
   const queryClient = useQueryClient()
+
+  // Logging in User
+  useEffect(() => {
+    const userLocal = JSON.parse(
+      window.localStorage.getItem(config.localStorageUserKey)
+    )
+    if (userLocal) {
+      setUser(userLocal)
+      blogService.setToken(userLocal)
+    }
+  }, [])
+
   const newBlogMutation = useMutation({
     mutationFn: blogService.create,
     onSuccess: (newBlog) => {
@@ -55,7 +39,7 @@ const App = () => {
       const actionShow = {
         type: "SHOW",
         payload: {
-          message: `A new Blog added: ${title}`,
+          message: `A new Blog added: ${newBlog.title}`,
           type: "info",
         },
       }
@@ -82,17 +66,26 @@ const App = () => {
       }, 5000)
     },
   })
+  const result = useQuery({
+    queryKey: ["blogs"],
+    queryFn: blogService.getAll,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  })
 
-  // Logging in User
-  useEffect(() => {
-    const userLocal = JSON.parse(
-      window.localStorage.getItem(config.localStorageUserKey)
+  if (result.status === "pending") {
+    return (
+      <div>
+        <h3>loading...</h3>
+      </div>
     )
-    if (userLocal) {
-      dispatch(setUser(userLocal))
-      blogService.setToken(userLocal)
-    }
-  }, [])
+  }
+
+  if (result.status === "error") {
+    return <h2>blogs service not available due to problems in server</h2>
+  }
+
+  const blogs = result.data
 
   const handleBlogSubmit = ({ title, author, url }) => {
     newBlogMutation.mutate({ title, author, url })
@@ -104,7 +97,7 @@ const App = () => {
           <NotificationComponent />
 
           <h2>Log in to application</h2>
-          <LoginForm />
+          <LoginForm setUser={setUser} />
         </div>
       ) : (
         <div className="create-blog-form">
@@ -116,7 +109,7 @@ const App = () => {
             {user.name} is logged in{" "}
             <button
               onClick={() => {
-                dispatch(setUser(null))
+                setUser(null)
                 window.localStorage.removeItem(config.localStorageUserKey)
               }}
             >
@@ -133,7 +126,9 @@ const App = () => {
       <div className="blog-list">
         {blogs.map((blog) => {
           try {
-            return <Blog key={blog.id} blog={blog} />
+            return (
+              <Blog key={blog.id} blog={blog} userID={user ? user.id : null} />
+            )
           } catch (error) {
             console.log(error)
           }

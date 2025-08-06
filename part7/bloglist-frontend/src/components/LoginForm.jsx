@@ -1,18 +1,15 @@
 import loginServices from "../services/login"
 import config from "../utils/config"
-import { useDispatch } from "react-redux"
 import blogsService from "../services/blogs"
-import { setUser } from "../reducers/userReducer"
 import { useField } from "../custom-hooks/useHooks"
 import NotificationContext from "../NotificationContext"
 import { useContext } from "react"
 
-const LoginForm = () => {
+const LoginForm = ({ setUser }) => {
   const [_, notificationDispatcher] = useContext(NotificationContext)
 
   const username = useField("text", "username")
   const password = useField("password", "password")
-  const dispatch = useDispatch()
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -31,7 +28,7 @@ const LoginForm = () => {
           config.localStorageUserKey,
           JSON.stringify(user)
         )
-        dispatch(setUser(user))
+        setUser(user)
         blogsService.setToken(user)
 
         notificationDispatcher({

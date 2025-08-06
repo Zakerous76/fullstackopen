@@ -1,12 +1,8 @@
 import { useState } from "react"
 import blogsService from "../services/blogs"
-import { useDispatch, useSelector } from "react-redux"
-import { fetchBlogs, updateBlogLikes } from "../reducers/blogsReducer"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-const Blog = ({ blog }) => {
-  const dispatch = useDispatch()
-  const userID = useSelector(({ user }) => (user ? user.id : null))
-
+const Blog = ({ blog, userID }) => {
   const [visible, setvisible] = useState(false)
 
   const blogStyle = {
@@ -24,6 +20,27 @@ const Blog = ({ blog }) => {
   const toggleShowDetails = () => {
     setvisible(!visible)
   }
+
+  const queryClient = useQueryClient()
+  const likeMutation = useMutation({
+    mutationFn: blogsService.updateBlogLikes,
+    onSuccess: (updatedBlog) => {
+      const blogs = queryClient.getQueryData(["blogs"])
+      const newBlogs = blogs.map((blog) => {
+        return blog.id === updatedBlog.id ? updatedBlog : blog
+      })
+      queryClient.setQueryData(["blogs"], newBlogs)
+    },
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: blogsService.deleteBlog,
+    onSuccess: async () => {
+      const newBlogs = await blogsService.getAll()
+      queryClient.setQueryData(["blogs"], newBlogs)
+    },
+  })
+
   return (
     <div className="blog">
       <div
@@ -41,10 +58,7 @@ const Blog = ({ blog }) => {
         <a href={blog.url}> {blog.url}</a> <br />
         <span>{blog.likes} </span>
         {/* users can like */}
-        <button onClick={() => dispatch(updateBlogLikes(blog))}>
-          like
-        </button>{" "}
-        <br />
+        <button onClick={() => likeMutation.mutate(blog)}>like</button> <br />
         {blog.author} <br />
         {userID === (blog.creator.id ? blog.creator.id : blog.creator) ? (
           <button
@@ -53,9 +67,7 @@ const Blog = ({ blog }) => {
                 `Are you sure you want to remove: ${blog.title}?`
               )
               if (answer) {
-                // users can delete
-                await blogsService.deleteBlog(blog)
-                dispatch(fetchBlogs())
+                deleteMutation.mutate(blog)
               }
             }}
           >

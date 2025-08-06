@@ -15,14 +15,17 @@ import {
   updateBlogLikes,
 } from "./reducers/blogsReducer"
 
+import { setUser } from "./reducers/userReducer"
+
 const App = () => {
   const dispatch = useDispatch()
-  const blogs = useSelector(({ blogs }) => {
-    return blogs
+  const [user, blogs] = useSelector(({ user, blogs }) => {
+    return [user, blogs]
   })
-  const [user, setUser] = useState(null)
+
   const toggleNewNoteVisibility = useRef()
 
+  // Initializing Blogs
   useEffect(() => {
     try {
       dispatch(fetchBlogs())
@@ -38,12 +41,13 @@ const App = () => {
     }
   }, [])
 
+  // Logging in User
   useEffect(() => {
     const userLocal = JSON.parse(
       window.localStorage.getItem(config.localStorageUserKey)
     )
     if (userLocal) {
-      setUser(userLocal)
+      dispatch(setUser(userLocal))
       blogService.setToken(userLocal)
     }
   }, [])
@@ -80,7 +84,7 @@ const App = () => {
           <NotificationComponent />
 
           <h2>Log in to application</h2>
-          <LoginForm setUser={setUser} />
+          <LoginForm />
         </div>
       ) : (
         <div className="create-blog-form">
@@ -92,7 +96,7 @@ const App = () => {
             {user.name} is logged in{" "}
             <button
               onClick={() => {
-                setUser(null)
+                dispatch(setUser(null))
                 window.localStorage.removeItem(config.localStorageUserKey)
               }}
             >

@@ -4,29 +4,35 @@ import config from "../utils/config"
 import { useDispatch } from "react-redux"
 import blogsService from "../services/blogs"
 import { setNotification } from "../reducers/notificationReducer"
+import { setUser } from "../reducers/userReducer"
+import { useField } from "../custom-hooks/useHooks"
 
-const LoginForm = ({ setUser }) => {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+const LoginForm = () => {
+  const username = useField("text", "username")
+  const password = useField("password", "password")
   const dispatch = useDispatch()
   const handleLogin = async (event) => {
     event.preventDefault()
-
     try {
-      const user = await loginServices.login({ username, password })
+      // Login
+      const user = await loginServices.login({
+        username: username.value,
+        password: password.value,
+      })
       if (user.code === "ERR_BAD_REQUEST") {
         throw user
       }
+
+      // Save the user on the browser storage
       if (user) {
         window.localStorage.setItem(
           config.localStorageUserKey,
           JSON.stringify(user)
         )
-        setUser(user)
+        dispatch(setUser(user))
         console.log("user set: ", user)
         blogsService.setToken(user)
-        setUsername("")
-        setPassword("")
+
         dispatch(
           setNotification({
             message: `Welcome, ${user.name}!`,
@@ -51,23 +57,9 @@ const LoginForm = ({ setUser }) => {
     <div>
       <form method="post" onSubmit={handleLogin}>
         <label htmlFor="username">Username </label>
-        <input
-          type="text"
-          name="Username"
-          id="username"
-          value={username}
-          onChange={({ target }) => setUsername(target.value)}
-        />{" "}
-        <br />
+        <input {...username} /> <br />
         <label htmlFor="password">Password </label>
-        <input
-          type="password"
-          name="Password"
-          id="password"
-          value={password}
-          placeholder="*********"
-          onChange={({ target }) => setPassword(target.value)}
-        />
+        <input {...password} placeholder="*********" />
         <br />
         <button type="submit">Log in</button>
       </form>

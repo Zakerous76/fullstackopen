@@ -1,13 +1,15 @@
-import { useState } from "react"
 import loginServices from "../services/login"
 import config from "../utils/config"
 import { useDispatch } from "react-redux"
 import blogsService from "../services/blogs"
-import { setNotification } from "../reducers/notificationReducer"
 import { setUser } from "../reducers/userReducer"
 import { useField } from "../custom-hooks/useHooks"
+import NotificationContext from "../NotificationContext"
+import { useContext } from "react"
 
 const LoginForm = () => {
+  const [_, notificationDispatcher] = useContext(NotificationContext)
+
   const username = useField("text", "username")
   const password = useField("password", "password")
   const dispatch = useDispatch()
@@ -33,23 +35,29 @@ const LoginForm = () => {
         console.log("user set: ", user)
         blogsService.setToken(user)
 
-        dispatch(
-          setNotification({
+        notificationDispatcher({
+          type: "SHOW",
+          payload: {
             message: `Welcome, ${user.name}!`,
             type: "info",
-            time_s: 5,
-          })
-        )
+          },
+        })
+        setTimeout(() => {
+          notificationDispatcher({ type: "HIDE" })
+        }, 5000)
       }
     } catch (error) {
       console.log("Error from Login.jsx:", error)
-      dispatch(
-        setNotification({
+      notificationDispatcher({
+        type: "SHOW",
+        payload: {
           message: `Error, ${error.response.data.error}!`,
           type: "error",
-          time_s: 5,
-        })
-      )
+        },
+      })
+      setTimeout(() => {
+        notificationDispatcher({ type: "HIDE" })
+      }, 5000)
     }
   }
 

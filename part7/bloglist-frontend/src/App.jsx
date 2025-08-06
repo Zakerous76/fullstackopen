@@ -8,16 +8,14 @@ import config from "./utils/config"
 import { useDispatch, useSelector } from "react-redux"
 import Togglable from "./components/Togglable"
 import { useRef } from "react"
-import { setNotification } from "./reducers/notificationReducer"
-import {
-  createNewBlog,
-  fetchBlogs,
-  updateBlogLikes,
-} from "./reducers/blogsReducer"
-
+import { createNewBlog, fetchBlogs } from "./reducers/blogsReducer"
+import NotificationContext from "./NotificationContext"
 import { setUser } from "./reducers/userReducer"
+import { useContext } from "react"
 
 const App = () => {
+  const [_, notificationDispatcher] = useContext(NotificationContext)
+
   const dispatch = useDispatch()
   // 7.13: Redux, Step 4
   const [user, blogs] = useSelector(({ user, blogs }) => {
@@ -31,14 +29,21 @@ const App = () => {
     try {
       dispatch(fetchBlogs())
     } catch (error) {
-      console.error("Error fetching blogs:", error)
-      dispatch(
-        setNotification({
-          message: "Failed to load blogs.",
+      const actionShow = {
+        type: "SHOW",
+        payload: {
+          message: `anecdote '${anecdote.content}' voted`,
           type: "error",
-          time_s: 5,
-        })
-      )
+        },
+      }
+      const actionHide = {
+        type: "HIDE",
+      }
+      console.error("Error fetching blogs:", error)
+      notificationDispatcher(actionShow)
+      setTimeout(() => {
+        notificationDispatcher(actionHide)
+      }, 5000)
     }
   }, [])
 
@@ -57,21 +62,33 @@ const App = () => {
     try {
       dispatch(createNewBlog({ title, author, url }))
       toggleNewNoteVisibility.current.toggleVisible()
-      dispatch(
-        setNotification({
+      const actionShow = {
+        type: "SHOW",
+        payload: {
           message: `A new Blog added: ${title}`,
           type: "info",
-          time_s: 5,
-        })
-      )
+        },
+      }
+      const actionHide = {
+        type: "HIDE",
+      }
+      notificationDispatcher(actionShow)
+      setTimeout(() => {
+        notificationDispatcher(actionHide)
+      }, 5000)
     } catch (error) {
-      dispatch(
-        setNotification({
+      notificationDispatcher({
+        type: "SHOW",
+        payload: {
           message: `Error, could not add the blog. Please log out and log in!`,
           type: "error",
-          time_s: 5,
+        },
+      })
+      setTimeout(() => {
+        notificationDispatcher({
+          type: "HIDE",
         })
-      )
+      }, 5000)
     }
   }
   return (

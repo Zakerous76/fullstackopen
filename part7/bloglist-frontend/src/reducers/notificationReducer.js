@@ -17,11 +17,6 @@ export const { setNotificationAction, resetNotification } =
   notificationSlice.actions
 
 export const setNotification = ({ message, type, time_s }) => {
-  console.log("setNotification called, notReducer.js:", {
-    message,
-    type,
-    time_s,
-  })
   return async (dispatch) => {
     dispatch(setNotificationAction({ message, type, show: true }))
     setTimeout(() => {

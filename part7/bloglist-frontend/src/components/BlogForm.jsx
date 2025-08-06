@@ -1,13 +1,12 @@
 import { useField } from "../custom-hooks/useHooks"
 
 const BlogForm = ({ handleBlogSubmit }) => {
-  const title = useField("text")
-  const author = useField("text")
-  const url = useField("text")
+  const title = useField("text", "title")
+  const author = useField("text", "author")
+  const url = useField("text", "url")
 
   const handleFormSubmit = async (event) => {
     event.preventDefault()
-    console.log("Form is submitted")
 
     await handleBlogSubmit({
       title: title.value,

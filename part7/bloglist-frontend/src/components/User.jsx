@@ -1,11 +1,23 @@
-import React from "react"
+import { Link } from "react-router"
 
-const User = ({ user }) => {
+const User = ({ targetUser }) => {
+  if (!targetUser) {
+    return null
+  }
   return (
-    <tr>
-      <td>{user.name}</td>
-      <td>{user.blogs.length}</td>
-    </tr>
+    <div>
+      <h2>{targetUser.name}</h2>
+      <h3>Added Blogs</h3>
+      <ul>
+        {targetUser.blogs.map((blog) => {
+          return (
+            <li key={blog.id}>
+              <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
   )
 }
 

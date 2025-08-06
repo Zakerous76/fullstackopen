@@ -12,16 +12,20 @@ import { setNotification } from "./reducers/notificationReducer"
 import { fetchBlogs } from "./reducers/blogsReducer"
 import { getAllUsers } from "./reducers/allUsersReducer"
 import { setUser } from "./reducers/userReducer"
-import { Routes, Route, Link } from "react-router"
+import { Routes, Route, Link, useMatch } from "react-router"
 import Users from "./components/Users"
 import Blogs from "./components/Blogs"
+import User from "./components/User"
+import BlogDetails from "./components/BlogDetails"
 
 const App = () => {
   const dispatch = useDispatch()
   // 7.13: Redux, Step 4
-  const [user, blogs] = useSelector(({ user, blogs }) => {
-    return [user, blogs]
-  })
+  const [loggedInUser, blogs, allUsers] = useSelector(
+    ({ user, blogs, allUsers }) => {
+      return [user, blogs, allUsers]
+    }
+  )
 
   const toggleNewNoteVisibility = useRef()
 
@@ -56,6 +60,20 @@ const App = () => {
     padding: 10,
   }
 
+  const targetUserMatch = useMatch("/users/:id")
+  const targetUser = targetUserMatch
+    ? allUsers.find((user) => {
+        return user.id == targetUserMatch.params.id
+      })
+    : null
+
+  const targetBlogMatch = useMatch("/blogs/:id")
+  const targetBlog = targetBlogMatch
+    ? blogs.find((blog) => {
+        return blog.id == targetBlogMatch.params.id
+      })
+    : null
+  console.log(targetBlog)
   return (
     <div>
       <div className="navigation">
@@ -68,21 +86,18 @@ const App = () => {
       </div>
 
       <div>
-        {user === null ? (
+        {loggedInUser === null ? (
           <div className="login-form">
             <NotificationComponent />
-
             <h2>Log in to application</h2>
             <LoginForm />
           </div>
         ) : (
           <div className="create-blog-form">
             <NotificationComponent />
-
             <h2>blogs</h2>
-
             <p>
-              {user.name} is logged in{" "}
+              {loggedInUser.name} is logged in{" "}
               <button
                 onClick={() => {
                   dispatch(setUser(null))
@@ -104,10 +119,12 @@ const App = () => {
             <Route path="/blogs" element={<Blogs blogs={blogs} />} />
             <Route path="/users" element={<Users />} />
             <Route
+              path="/users/:id"
+              element={<User targetUser={targetUser} />}
+            />
+            <Route
               path="/blogs/:id"
-              element={() => {
-                return
-              }}
+              element={<BlogDetails targetBlog={targetBlog} />}
             />
           </Routes>
         </div>

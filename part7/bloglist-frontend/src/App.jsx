@@ -73,7 +73,6 @@ const App = () => {
         return blog.id == targetBlogMatch.params.id
       })
     : null
-  console.log(targetBlog)
   return (
     <div>
       <div className="navigation">

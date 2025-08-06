@@ -1,8 +1,8 @@
 import { useDispatch } from "react-redux"
 import { updateBlogLikes } from "../reducers/blogsReducer"
+import Comments from "./Comments"
 
 const Blog = ({ targetBlog }) => {
-  console.log("targetBlog::", targetBlog)
   const dispatch = useDispatch()
 
   if (!targetBlog) {
@@ -19,6 +19,7 @@ const Blog = ({ targetBlog }) => {
         </button>
       </div>
       <div>{targetBlog.creator.name}</div>
+      <Comments blog={targetBlog} />
     </div>
   )
 }

@@ -1,5 +1,4 @@
 import { useSelector } from "react-redux"
-import User from "./User"
 import { Link } from "react-router"
 
 const Users = () => {

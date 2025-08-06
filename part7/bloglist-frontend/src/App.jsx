@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import Blog from "./components/Blog"
+import BlogOld from "./components/BlogOld"
 import LoginForm from "./components/LoginForm"
 import NotificationComponent from "./components/NotificationComponent"
 import BlogForm from "./components/BlogForm"
@@ -16,7 +16,7 @@ import { Routes, Route, Link, useMatch } from "react-router"
 import Users from "./components/Users"
 import Blogs from "./components/Blogs"
 import User from "./components/User"
-import BlogDetails from "./components/BlogDetails"
+import Blog from "./components/Blog"
 
 const App = () => {
   const dispatch = useDispatch()
@@ -77,7 +77,7 @@ const App = () => {
   return (
     <div>
       <div className="navigation">
-        <Link style={padding} to="/blogs">
+        <Link style={padding} to="/">
           Blogs
         </Link>
         <Link style={padding} to="/users">
@@ -116,7 +116,7 @@ const App = () => {
 
         <div>
           <Routes>
-            <Route path="/blogs" element={<Blogs blogs={blogs} />} />
+            <Route path="/" element={<Blogs blogs={blogs} />} />
             <Route path="/users" element={<Users />} />
             <Route
               path="/users/:id"
@@ -124,7 +124,7 @@ const App = () => {
             />
             <Route
               path="/blogs/:id"
-              element={<BlogDetails targetBlog={targetBlog} />}
+              element={<Blog targetBlog={targetBlog} />}
             />
           </Routes>
         </div>

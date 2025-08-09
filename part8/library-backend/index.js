@@ -129,6 +129,10 @@ const typeDefs = `
       id: ID
       genres: [String!]
     ): Book
+    editAuthor(
+      name: String!
+      setBornTo: Int!
+    ): Author
   }
 `
 
@@ -183,6 +187,12 @@ const resolvers = {
           })
 
       return newBook
+    },
+    editAuthor: (root, args) => {
+      authors.forEach((a) =>
+        a.name === args.name ? (a.born = args.setBornTo) : null
+      )
+      return authors.find((a) => a.name === args.name)
     },
   },
 }

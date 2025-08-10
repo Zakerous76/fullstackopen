@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useQuery } from "@apollo/client"
 import { GET_AUTHORS } from "../../queries"
+import SetAuthorYear from "./SetAuthorYear"
 
 const Authors = (props) => {
   const result = useQuery(GET_AUTHORS)
@@ -14,7 +15,6 @@ const Authors = (props) => {
   }
 
   const authors = result.data.allAuthors || []
-  console.log("authors: ", authors)
 
   return (
     <div>
@@ -35,6 +35,7 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+      <SetAuthorYear />
     </div>
   )
 }

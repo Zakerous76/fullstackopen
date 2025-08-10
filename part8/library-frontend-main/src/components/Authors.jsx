@@ -15,6 +15,9 @@ const Authors = (props) => {
   }
 
   const authors = result.data.allAuthors || []
+  const authorsOptions = authors.map((a) => {
+    return { value: a.name.toLowerCase(), label: a.name }
+  })
 
   return (
     <div>
@@ -35,7 +38,7 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <SetAuthorYear />
+      <SetAuthorYear authorsOptions={authorsOptions} />
     </div>
   )
 }

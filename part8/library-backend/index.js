@@ -135,7 +135,7 @@ const typeDefs = `
     ): Author
   }
 `
-
+// I dont want to study today but dont wanna lose the commit streak either :(
 const resolvers = {
   Query: {
     bookCount: () => books.length,

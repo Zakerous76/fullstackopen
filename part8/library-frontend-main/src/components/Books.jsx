@@ -4,34 +4,39 @@ import { useEffect, useState } from "react"
 
 /* eslint-disable react/prop-types */
 const Books = (props) => {
-  const [booksToShow, setBooksToShow] = useState([])
+  const [booksToShow, setBooksToShow] = useState([{}])
   const [inGenre, setInGenre] = useState("All")
+  const [allBooks, setAllBooks] = useState([])
+
   const result = useQuery(GET_BOOKS)
-  let allBooks = null
+
+  const filteredResult = useQuery(GET_BOOKS, {
+    variables: { genre: inGenre },
+    skip: inGenre === "All",
+  })
+
+  useEffect(() => {
+    if (filteredResult.data) {
+      setBooksToShow(filteredResult.data.allBooks)
+    }
+  }, [filteredResult.data])
+
+  useEffect(() => {
+    if (inGenre === "All") {
+      setBooksToShow(allBooks)
+    }
+  }, [inGenre, allBooks])
 
   useEffect(() => {
     if (result.data) {
-      setBooksToShow(result.data.allBooks)
+      setAllBooks(result.data.allBooks)
     }
   }, [result.data])
-
-  useEffect(() => {
-    if (allBooks) {
-      if (inGenre === "All") {
-        setBooksToShow(allBooks)
-      } else {
-        setBooksToShow(allBooks.filter((b) => b.genres.includes(inGenre)))
-      }
-    }
-  }, [inGenre])
 
   if (!props.show) {
     return null
   }
-  if (result.loading) {
-    return <div>Loading...</div>
-  }
-  allBooks = result.data.allBooks || []
+
   const genres = [
     ...new Set(
       allBooks.reduce((allGenres, book) => [...allGenres, ...book.genres], [])
@@ -58,11 +63,7 @@ const Books = (props) => {
               <td>{a.title}</td>
               <td>{a.author.name}</td>
               <td>{a.published}</td>
-              <td>
-                {a.genres.map((g) => (
-                  <span> {g} </span>
-                ))}
-              </td>
+              <td>{a.genres.join(" ")}</td>
             </tr>
           ))}
         </tbody>

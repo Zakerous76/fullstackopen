@@ -1,22 +1,32 @@
-import React from "react"
+/* eslint-disable react/prop-types */
+import { useQuery } from "@apollo/client"
+import { GET_BOOKS } from "../../queries"
+import { useEffect, useState } from "react"
 
 const Recommend = (props) => {
+  const [allBooks, setAllBooks] = useState([])
+  let favoriteGenre
+  if (props.user) {
+    favoriteGenre = props.user.favoriteGenre
+  }
+  const result = useQuery(GET_BOOKS, {
+    variables: { genre: favoriteGenre },
+    skip: !favoriteGenre,
+  })
+
+  useEffect(() => {
+    if (result.data) {
+      setAllBooks(result.data.allBooks)
+    }
+  }, [result.data])
+
   if (!props.show) {
     return null
   }
-  const favoriteGenre = props.user.favoriteGenre
-  console.log("favoriteGenre:", favoriteGenre)
-  const allBooks = props.allBooks.filter((b) => {
-    console.log(
-      "b.genres.includes(favoriteGenre):",
-      b.genres.includes(favoriteGenre)
-    )
-    return b.genres.includes(favoriteGenre)
-  })
-  console.log("allBooksss:", allBooks)
+
   return (
     <div>
-      <h2>Recommend</h2>
+      <h2>Recommendations</h2>
       <div>
         <h2>books</h2>
         <div>
@@ -35,11 +45,7 @@ const Recommend = (props) => {
                 <td>{a.title}</td>
                 <td>{a.author.name}</td>
                 <td>{a.published}</td>
-                <td>
-                  {a.genres.map((g) => (
-                    <span> {g} </span>
-                  ))}
-                </td>
+                <td>{a.genres.join(" ")}</td>
               </tr>
             ))}
           </tbody>

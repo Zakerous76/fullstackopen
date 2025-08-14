@@ -21,7 +21,6 @@ const App = () => {
 
   const allBooksResult = useQuery(GET_BOOKS)
   const allBooks = allBooksResult.loading ? [] : allBooksResult.data.allBooks
-  console.log("allBooks:", allBooks)
 
   useEffect(() => {
     if (currentUserResult.data) {

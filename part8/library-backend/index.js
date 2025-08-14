@@ -9,7 +9,7 @@ const author = require("./models/author")
 
 const typeDefs = `
   type Author {
-    name: String!
+    name: String
     id: ID
     born: Int
     bookCount: Int
@@ -44,30 +44,43 @@ const typeDefs = `
     ): Author
   }
 `
+
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, args) => {
+    bookCount: async () => (await Book.find({})).length,
+    authorCount: async () => (await Author.find({})).length,
+    allBooks: async (root, args) => {
       if (!args.author && !args.genre) {
-        return books
+        return Book.find({}).populate("author")
       }
       if (args.author && !args.genre) {
-        return books.filter((b) => b.author === args.author)
+        const theAuthor = await Author.findOne({ name: args.author })
+        if (!theAuthor) {
+          return null
+        }
+        return await Book.find({ author: theAuthor }).populate("author")
       }
       if (!args.author && args.genre) {
-        return books.filter((b) => b.genres.includes(args.genre))
+        const allBooks = await Book.find({}).populate("author")
+        return allBooks.filter((b) => b.genres.includes(args.genre))
       }
-      return books.filter(
-        (b) => b.author === args.author && b.genres.includes(args.genre)
-      )
+      const theAuthor = await Author.findOne({ name: args.author })
+      if (!theAuthor) {
+        return null
+      }
+      const theAuthorGenreBooks = await Book.find({
+        author: theAuthor,
+      }).populate("author")
+      return theAuthorGenreBooks.filter((b) => b.genres.includes(args.genre))
     },
-    allAuthors: () => {
+    allAuthors: async () => {
+      const authors = await Author.find({})
       return authors.map((author) => {
-        const bookCount = books.filter((b) => {
-          return b.author === author.name
-        }).length
-        const result = { ...author, bookCount }
+        const result = {
+          name: author.name,
+          id: author._id,
+          born: author.born,
+        }
         return result
       })
     },
@@ -77,6 +90,15 @@ const resolvers = {
     published: (root) => root.published,
     author: (root) => root.author,
     genres: (root) => root.genres,
+  },
+  Author: {
+    bookCount: async (root) => {
+      console.log("root.name: ", root.name)
+      const authorId = await Author.find({ name: root.name })
+      const bookCount = (await Book.find({ author: authorId })).length
+      console.log("bookCount: ", bookCount)
+      return bookCount
+    },
   },
   Mutation: {
     addBook: async (root, args) => {

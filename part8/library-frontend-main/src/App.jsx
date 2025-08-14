@@ -12,7 +12,7 @@ const App = () => {
 
   useEffect(() => {
     setToken(localStorage.getItem("library-user-token"))
-  }, [])
+  }, [token])
 
   const logout = () => {
     setToken(null)
@@ -24,12 +24,12 @@ const App = () => {
     <div>
       <div>
         <button onClick={() => setPage("authors")}>authors</button>
-        <button onClick={() => setPage("add")}>add book</button>
+        <button onClick={() => setPage("books")}>books</button>
         {token ? (
-          <div>
-            <button onClick={() => setPage("books")}>books</button>
+          <>
+            <button onClick={() => setPage("add")}>add book</button>
             <button onClick={logout}>logout</button>
-          </div>
+          </>
         ) : (
           <button onClick={() => setPage("login")}>login</button>
         )}

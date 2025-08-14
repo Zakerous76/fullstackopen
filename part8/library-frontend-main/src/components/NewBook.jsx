@@ -9,7 +9,31 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState("")
   const [genres, setGenres] = useState([])
 
-  const [createBook, result] = useMutation(CREATE_BOOK)
+  const [createBook] = useMutation(CREATE_BOOK, {
+    onError: (error) => {
+      console.log("Error:", error)
+    },
+    update: (cache, { data: { addBook } }) => {
+      // 1. Update unfiltered list
+      cache.updateQuery({ query: GET_BOOKS }, (data) => {
+        if (!data) return { allBooks: [addBook] }
+        return { allBooks: data.allBooks.concat(addBook) }
+      })
+
+      // 2. Update filtered list for each genre of the new book
+      addBook.genres.forEach((genre) => {
+        cache.updateQuery(
+          { query: GET_BOOKS, variables: { genre } },
+          (data) => {
+            if (!data) return { allBooks: [addBook] }
+            // only add if not already in list
+            if (data.allBooks.some((b) => b.id === addBook.id)) return data
+            return { allBooks: data.allBooks.concat(addBook) }
+          }
+        )
+      })
+    },
+  })
 
   if (!props.show) {
     return null
@@ -23,10 +47,9 @@ const NewBook = (props) => {
       variables: {
         title,
         author,
-        published,
+        published: Number(published),
         genres,
       },
-      refetchQueries: [{ query: GET_BOOKS }],
     })
 
     setTitle("")

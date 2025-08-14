@@ -6,6 +6,7 @@ const Author = require("./models/author")
 const Book = require("./models/book")
 const book = require("./models/book")
 const author = require("./models/author")
+const createBookCountLoader = require("./loaders/bookCountLoader")
 
 const typeDefs = `
   type Author {
@@ -74,15 +75,27 @@ const resolvers = {
       return theAuthorGenreBooks.filter((b) => b.genres.includes(args.genre))
     },
     allAuthors: async () => {
+      // 1. Get all authors
       const authors = await Author.find({})
-      return authors.map((author) => {
-        const result = {
-          name: author.name,
-          id: author._id,
-          born: author.born,
-        }
-        return result
+
+      // 2. Aggregate book counts for all authors in one query
+      const bookCounts = await Book.aggregate([
+        { $group: { _id: "$author", count: { $sum: 1 } } },
+      ])
+
+      // 3. Create a lookup map
+      const countMap = {}
+      bookCounts.forEach((entry) => {
+        countMap[entry._id.toString()] = entry.count
       })
+
+      // 4. Return authors with bookCount directly
+      return authors.map((author) => ({
+        name: author.name,
+        id: author._id,
+        born: author.born,
+        bookCount: countMap[author._id.toString()] || 0,
+      }))
     },
   },
   Book: {
@@ -92,12 +105,12 @@ const resolvers = {
     genres: (root) => root.genres,
   },
   Author: {
-    bookCount: async (root) => {
-      console.log("root.name: ", root.name)
-      const authorId = await Author.find({ name: root.name })
-      const bookCount = (await Book.find({ author: authorId })).length
-      console.log("bookCount: ", bookCount)
-      return bookCount
+    bookCount: async (root, args, { loaders }) => {
+      const authorId = mongoose.Types.ObjectId.isValid(root.id)
+        ? new mongoose.Types.ObjectId(root.id)
+        : root.id
+
+      return loaders.bookCountLoader.load(authorId)
     },
   },
   Mutation: {
@@ -145,6 +158,11 @@ mongoose
 
 startStandaloneServer(server, {
   listen: { port: process.env.PORT },
+  context: async () => ({
+    loaders: {
+      bookCountLoader: createBookCountLoader(),
+    },
+  }),
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })

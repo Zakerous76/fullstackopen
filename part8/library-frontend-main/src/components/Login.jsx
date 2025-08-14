@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from "react"
+import { useState } from "react"
 import { LOGIN } from "../../queries"
 import { useMutation } from "@apollo/client"
 
@@ -10,7 +10,7 @@ const Login = (props) => {
     onError: (error) => {
       console.log("Login Failed: ", error.graphQLErrors[0].message)
     },
-    onCompleted: (param) => {
+    onCompleted: () => {
       console.log("Welcome!")
     },
   })

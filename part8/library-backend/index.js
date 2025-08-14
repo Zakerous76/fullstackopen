@@ -4,12 +4,22 @@ require("dotenv").config()
 const mongoose = require("mongoose")
 const Author = require("./models/author")
 const Book = require("./models/book")
-const book = require("./models/book")
-const author = require("./models/author")
+const User = require("./models/user")
 const createBookCountLoader = require("./loaders/bookCountLoader")
-const { GraphQLBoolean, GraphQLError } = require("graphql")
+const { GraphQLError } = require("graphql")
+const jwt = require("jsonwebtoken")
 
 const typeDefs = `
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
+  }
+
   type Author {
     name: String
     id: ID
@@ -30,6 +40,7 @@ const typeDefs = `
     authorCount: Int
     allBooks(author: String genre: String): [Book!]!
     allAuthors: [Author!]!
+    me: User
   }
 
   type Mutation {
@@ -44,6 +55,15 @@ const typeDefs = `
       name: String!
       setBornTo: Int!
     ): Author
+
+    createUser(
+      username: String!
+      favoriteGenre: String!
+    ): User
+    login(
+      username: String!
+      password: String!
+    ): Token
   }
 `
 
@@ -98,6 +118,9 @@ const resolvers = {
         bookCount: countMap[author._id.toString()] || 0,
       }))
     },
+    me: (root, args, context) => {
+      return context.currentUser // just return the user from context
+    },
   },
   Book: {
     title: (root) => root.title,
@@ -115,8 +138,15 @@ const resolvers = {
     },
   },
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("User not logged in", {
+          extensions: { code: "UNAUTHENTICATED" },
+        })
+      }
+
       let theAuthor = await Author.findOne({ name: args.author })
+      console.log("theAuthor:", theAuthor)
       try {
         if (!theAuthor) {
           theAuthor = await new Author({ name: args.author }).save()
@@ -130,7 +160,7 @@ const resolvers = {
         })
 
         await newBook.save()
-        return newBook
+        return newBook.populate("author")
       } catch (error) {
         throw new GraphQLError(error.message, {
           extensions: {
@@ -141,11 +171,67 @@ const resolvers = {
         })
       }
     },
-    editAuthor: (root, args) => {
-      authors.forEach((a) =>
-        a.name === args.name ? (a.born = args.setBornTo) : null
-      )
-      return authors.find((a) => a.name === args.name)
+    editAuthor: async (root, args, context) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("User not logged in", {
+          extensions: { code: "UNAUTHENTICATED" },
+        })
+      }
+      const setToBorn = args.setBornTo
+      const name = args.name
+      const author = await Author.findOne({ name })
+      if (!author) {
+        throw new GraphQLError(`Author ' ${name} ', does not exist`)
+      }
+      author.born = setToBorn
+      return await author.save()
+    },
+    createUser: async (root, args) => {
+      const username = args.username
+      const favoriteGenre = args.favoriteGenre
+      const user = new User({ username, favoriteGenre })
+      try {
+        return await user.save()
+      } catch (error) {
+        const message =
+          error.message === "Validation failed"
+            ? "Username must be unique"
+            : error.message
+        throw new GraphQLError(message, {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: username,
+            error,
+          },
+        })
+      }
+    },
+    login: async (root, args) => {
+      const username = args.username
+      const password = args.password
+      const user = await User.findOne({ username })
+      try {
+        if (user && password === "password") {
+          const userForToken = {
+            username,
+            id: user.id,
+          }
+          return { value: jwt.sign(userForToken, process.env.SECRET) }
+        } else {
+          throw new GraphQLError("Wrong credentials Bhai Sahb", {
+            extensions: {
+              code: "BAD_USER_INPUT",
+            },
+          })
+        }
+      } catch (error) {
+        throw new GraphQLError(error.message, {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            error,
+          },
+        })
+      }
     },
   },
 }
@@ -165,11 +251,26 @@ mongoose
 
 startStandaloneServer(server, {
   listen: { port: process.env.PORT },
-  context: async () => ({
-    loaders: {
-      bookCountLoader: createBookCountLoader(),
-    },
-  }),
+  context: async ({ req }) => {
+    let currentUser = null
+
+    const auth = req?.headers?.authorization || null
+    if (auth && auth.toLowerCase().startsWith("bearer ")) {
+      try {
+        const decodedToken = jwt.verify(auth.substring(7), process.env.SECRET)
+        currentUser = await User.findById(decodedToken.id)
+      } catch (err) {
+        console.error("Invalid or expired token", err)
+      }
+    }
+
+    return {
+      loaders: {
+        bookCountLoader: createBookCountLoader(),
+      },
+      currentUser, // This is now a *value*, not a function
+    }
+  },
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })

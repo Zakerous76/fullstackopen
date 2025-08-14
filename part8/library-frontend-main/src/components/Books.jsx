@@ -6,9 +6,9 @@ import { useEffect, useState } from "react"
 const Books = (props) => {
   const [booksToShow, setBooksToShow] = useState([])
   const [inGenre, setInGenre] = useState("All")
+  const result = useQuery(GET_BOOKS)
   let allBooks = null
 
-  const result = useQuery(GET_BOOKS)
   useEffect(() => {
     if (result.data) {
       setBooksToShow(result.data.allBooks)
@@ -38,7 +38,6 @@ const Books = (props) => {
     ),
   ]
   genres.push("All")
-  console.log("booksToShow:", booksToShow)
 
   return (
     <div>

@@ -62,3 +62,13 @@ export const LOGIN = gql`
     }
   }
 `
+
+export const CURRENT_USER = gql`
+  query {
+    me {
+      id
+      username
+      favoriteGenre
+    }
+  }
+`

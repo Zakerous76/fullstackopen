@@ -7,6 +7,7 @@ const Book = require("./models/book")
 const book = require("./models/book")
 const author = require("./models/author")
 const createBookCountLoader = require("./loaders/bookCountLoader")
+const { GraphQLBoolean, GraphQLError } = require("graphql")
 
 const typeDefs = `
   type Author {
@@ -116,22 +117,28 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args) => {
       let theAuthor = await Author.findOne({ name: args.author })
-      if (!theAuthor) {
-        theAuthor = await new Author({ name: args.author }).save()
-      }
-
-      const newBook = new Book({
-        title: args.title,
-        author: theAuthor._id,
-        published: args.published,
-        genres: args.genres,
-      })
-
       try {
+        if (!theAuthor) {
+          theAuthor = await new Author({ name: args.author }).save()
+        }
+
+        const newBook = new Book({
+          title: args.title,
+          author: theAuthor._id,
+          published: args.published,
+          genres: args.genres,
+        })
+
         await newBook.save()
         return newBook
       } catch (error) {
-        console.log("Error while adding the new book: ", error)
+        throw new GraphQLError(error.message, {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name,
+            error,
+          },
+        })
       }
     },
     editAuthor: (root, args) => {

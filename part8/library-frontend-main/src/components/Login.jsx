@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react"
-import { LOGIN } from "../../queries"
+import { LOGIN } from "../graphql/queries"
 import { useMutation } from "@apollo/client"
 
 const Login = (props) => {

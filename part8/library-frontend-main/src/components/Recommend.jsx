@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useQuery } from "@apollo/client"
-import { GET_BOOKS } from "../../queries"
+import { GET_BOOKS } from "../graphql/queries"
 import { useEffect, useState } from "react"
 
 const Recommend = (props) => {

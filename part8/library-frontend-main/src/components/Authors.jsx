@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useQuery } from "@apollo/client"
-import { GET_AUTHORS } from "../../queries"
+import { GET_AUTHORS } from "../graphql/queries"
 import SetAuthorYear from "./SetAuthorYear"
 
 const Authors = (props) => {

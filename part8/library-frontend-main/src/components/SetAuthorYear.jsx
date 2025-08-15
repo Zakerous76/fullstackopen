@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client"
 import React, { useState } from "react"
-import { GET_AUTHORS, UPDATE_AUTHOR } from "../../queries"
+import { GET_AUTHORS, UPDATE_AUTHOR } from "../graphql/queries"
 import Select from "react-select"
 
 const SetAuthorYear = ({ authorsOptions }) => {

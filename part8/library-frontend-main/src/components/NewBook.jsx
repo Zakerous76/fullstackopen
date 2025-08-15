@@ -13,26 +13,26 @@ const NewBook = (props) => {
     onError: (error) => {
       console.log("Error:", error)
     },
-    update: (cache, { data: { addBook } }) => {
-      // 1. Update unfiltered list
-      cache.updateQuery({ query: GET_BOOKS }, (data) => {
-        if (!data) return { allBooks: [addBook] }
-        return { allBooks: data.allBooks.concat(addBook) }
-      })
+    // update: (cache, { data: { addBook } }) => {
+    //   // 1. Update unfiltered list
+    //   cache.updateQuery({ query: GET_BOOKS }, (data) => {
+    //     if (!data) return { allBooks: [addBook] }
+    //     return { allBooks: data.allBooks.concat(addBook) }
+    //   })
 
-      // 2. Update filtered list for each genre of the new book
-      addBook.genres.forEach((genre) => {
-        cache.updateQuery(
-          { query: GET_BOOKS, variables: { genre } },
-          (data) => {
-            if (!data) return { allBooks: [addBook] }
-            // only add if not already in list
-            if (data.allBooks.some((b) => b.id === addBook.id)) return data
-            return { allBooks: data.allBooks.concat(addBook) }
-          }
-        )
-      })
-    },
+    //   // 2. Update filtered list for each genre of the new book
+    //   addBook.genres.forEach((genre) => {
+    //     cache.updateQuery(
+    //       { query: GET_BOOKS, variables: { genre } },
+    //       (data) => {
+    //         if (!data) return { allBooks: [addBook] }
+    //         // only add if not already in list
+    //         if (data.allBooks.some((b) => b.id === addBook.id)) return data
+    //         return { allBooks: data.allBooks.concat(addBook) }
+    //       }
+    //     )
+    //   })
+    // },
   })
 
   if (!props.show) {

@@ -58,6 +58,7 @@ const start = async () => {
         }
 
         return {
+          // 8.26: n+1
           loaders: {
             bookCountLoader: createBookCountLoader(),
           },

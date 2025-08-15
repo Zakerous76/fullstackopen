@@ -6,7 +6,7 @@ import { useApolloClient, useQuery, useSubscription } from "@apollo/client"
 import Login from "./components/Login"
 import { BOOK_ADDED, CURRENT_USER, GET_BOOKS } from "./graphql/queries"
 import Recommend from "./components/Recommend"
-
+// 8.25: Subscriptions - client, part 2
 export const updateGraphQLCache = (cache, query, addedBook) => {
   const uniqByName = (a) => {
     let seen = new Set()

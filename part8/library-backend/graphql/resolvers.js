@@ -4,6 +4,9 @@ const Author = require("../models/author")
 const Book = require("../models/book")
 const jwt = require("jsonwebtoken")
 
+const { PubSub } = require("graphql-subscriptions")
+const pubsub = new PubSub()
+
 const resolvers = {
   Query: {
     bookCount: async () => (await Book.find({})).length,
@@ -97,6 +100,9 @@ const resolvers = {
         })
 
         await newBook.save()
+
+        pubsub.publish("BOOK_ADDED", { bookAdded: newBook })
+
         return newBook.populate("author")
       } catch (error) {
         throw new GraphQLError(error.message, {
@@ -169,6 +175,11 @@ const resolvers = {
           },
         })
       }
+    },
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterableIterator("BOOK_ADDED"),
     },
   },
 }

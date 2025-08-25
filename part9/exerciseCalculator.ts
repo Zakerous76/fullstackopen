@@ -1,4 +1,4 @@
-interface ExerciseResult {
+export interface ExerciseResult {
   periodLength: number
   trainingDays: number
   success: boolean
@@ -38,7 +38,7 @@ const parseArgumentsForExercise = (args: string[]): exerciseParams => {
   }
 }
 
-const calculateExercises = (
+export const calculateExercises = (
   exerciseArray: number[],
   target: number
 ): ExerciseResult => {
@@ -85,6 +85,10 @@ const calculateExercises = (
   }
 }
 
-const { target, exerciseArray } = parseArgumentsForExercise(process.argv)
+const fun = () => {
+  const { target, exerciseArray } = parseArgumentsForExercise(process.argv)
+  console.log(calculateExercises(exerciseArray, target))
+}
 
-console.log(calculateExercises(exerciseArray, target))
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+require.main === module ? fun() : null

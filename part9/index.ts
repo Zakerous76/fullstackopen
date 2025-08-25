@@ -1,6 +1,9 @@
 import express from "express"
 import { calculateBmi } from "./bmiCalculator"
+import { calculateExercises } from "./exerciseCalculator"
 const app = express()
+
+app.use(express.json())
 
 app.get("/hello", (_req, res) => {
   return res.send("Hello Full Stack!")
@@ -12,11 +15,28 @@ app.get("/bmi", (req, res) => {
   if (isNaN(height) || isNaN(weight)) {
     return res
       .status(400)
-      .send(`Wrong inputs! height: ${height}, weight: ${weight}`)
+      .json({ error: `Wrong inputs! height: ${height}, weight: ${weight}` })
   }
 
   const bmiResult = calculateBmi(height, weight)
   return res.send(bmiResult)
+})
+
+app.post("/exercises", (req, res) => {
+  console.log(req.body)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { daily_exercises, target } = req.body
+
+  if (!daily_exercises || !target) {
+    return res.status(400).json({
+      error: `Please give both params in the body! req.body: ${req.body}`,
+    })
+  }
+  const result = calculateExercises(
+    daily_exercises as number[],
+    target as number
+  )
+  return res.json(result)
 })
 
 const PORT = 3000

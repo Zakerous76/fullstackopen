@@ -20,7 +20,7 @@ const parseArguments = (args: string[]): parsedValues => {
   )
 }
 
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
   if (!height) return `Please enter valid height: ${height}`
   const bmi = weight / (height / 100) ** 2
   console.log("bmi:", bmi)
@@ -38,6 +38,10 @@ const calculateBmi = (height: number, weight: number): string => {
   return `IDK what you are. Height: ${height} - Weight: ${weight}`
 }
 
-const { val1, val2 } = parseArguments(process.argv)
-console.log(val1, val2)
-console.log(calculateBmi(val1, val2))
+const func = () => {
+  const { val1, val2 } = parseArguments(process.argv)
+  console.log(val1, val2)
+  console.log(calculateBmi(val1, val2))
+}
+
+require.main === module ? func() : null

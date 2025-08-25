@@ -32,7 +32,7 @@ export const calculateBmi = (height: number, weight: number): string => {
     return "Overweight"
   } else if (bmi < 35) {
     return "Obese"
-  } else if (bmi < 35) {
+  } else if (bmi < 40) {
     return "Extremely Obese"
   }
   return `IDK what you are. Height: ${height} - Weight: ${weight}`
@@ -44,4 +44,5 @@ const func = () => {
   console.log(calculateBmi(val1, val2))
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 require.main === module ? func() : null

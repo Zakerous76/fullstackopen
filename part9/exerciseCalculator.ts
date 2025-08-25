@@ -26,7 +26,7 @@ const parseArgumentsForExercise = (args: string[]): exerciseParams => {
     }
   }
   const target = Number(args[2])
-  let exerciseArray = []
+  const exerciseArray = []
   for (let index = 3; index < args.length; index++) {
     if (!isNaN(Number(args[index]))) {
       exerciseArray.push(Number(args[index]))

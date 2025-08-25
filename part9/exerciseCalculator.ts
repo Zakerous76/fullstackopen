@@ -8,6 +8,36 @@ interface ExerciseResult {
   average: number
 }
 
+interface exerciseParams {
+  target: number
+  exerciseArray: number[]
+}
+
+const parseArgumentsForExercise = (args: string[]): exerciseParams => {
+  if (args.length < 4) throw new Error("too less arguments")
+
+  for (let index = 2; index < args.length; index++) {
+    if (isNaN(Number(args[index]))) {
+      throw new Error(
+        `Error! index: ${index} | args[index]=${
+          args[index]
+        } | Number(args[index]): ${Number(args[index])}`
+      )
+    }
+  }
+  const target = Number(args[2])
+  let exerciseArray = []
+  for (let index = 3; index < args.length; index++) {
+    if (!isNaN(Number(args[index]))) {
+      exerciseArray.push(Number(args[index]))
+    }
+  }
+  return {
+    target,
+    exerciseArray,
+  }
+}
+
 const calculateExercises = (
   exerciseArray: number[],
   target: number
@@ -55,4 +85,6 @@ const calculateExercises = (
   }
 }
 
-console.log(calculateExercises([0], 10))
+const { target, exerciseArray } = parseArgumentsForExercise(process.argv)
+
+console.log(calculateExercises(exerciseArray, target))

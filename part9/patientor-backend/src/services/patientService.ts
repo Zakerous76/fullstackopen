@@ -1,6 +1,6 @@
-import { NonSensitivePatient, Patient } from "../types"
+import { NewPatientEntry, NonSensitivePatient, Patient } from "../types"
 import patientsData from "../../data/patients"
-import { generateId, toNewPatientEntry } from "../utils"
+import { generateId } from "../utils"
 
 export const getNonSensitivePatient = (): NonSensitivePatient[] => {
   return patientsData.map(({ id, name, dateOfBirth, gender, occupation }) => ({
@@ -12,9 +12,8 @@ export const getNonSensitivePatient = (): NonSensitivePatient[] => {
   }))
 }
 
-export const createNewPatient = (reqBody: unknown): Patient => {
+export const createNewPatient = (newPatientEntry: NewPatientEntry): Patient => {
   const id = generateId()
-  const newPatientWithoutID = toNewPatientEntry(reqBody)
-  const newPatient: Patient = { id, ...newPatientWithoutID }
+  const newPatient: Patient = { id, ...newPatientEntry }
   return newPatient
 }

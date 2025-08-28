@@ -1,4 +1,5 @@
-// Already done that sire
+import z from "zod"
+
 export enum gender {
   Male = "male",
   Female = "female",
@@ -24,4 +25,12 @@ export type NonSensitivePatient = Omit<Patient, "ssn">
 
 export type PatientResponse = Patient | { error: string }
 
-export type NewPatientEntry = Omit<Patient, "id">
+export const NewPatientSchema = z.object({
+  name: z.string(),
+  dateOfBirth: z.string().date(),
+  ssn: z.string(),
+  gender: z.enum(gender),
+  occupation: z.string(),
+})
+
+export type NewPatientEntry = z.infer<typeof NewPatientSchema>

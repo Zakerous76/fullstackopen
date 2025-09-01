@@ -8,6 +8,7 @@ type EntriesType = {
   setEntries: React.Dispatch<React.SetStateAction<Entry[]>>
 }
 
+// Exercise 9.20: I have made sure the user can only select one of the viable options
 const visibilityOptions = Object.values(Visibility).map((v) => ({
   value: v,
   label: `visibility - ${v}`,

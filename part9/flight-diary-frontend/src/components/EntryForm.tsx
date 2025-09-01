@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import Select from "react-dropdown-select"
 import diaryService from "../services/diaryService"
 import { Visibility, Weather, type Entry } from "../types"
+import Error from "./Error"
 
 type EntriesType = {
   setEntries: React.Dispatch<React.SetStateAction<Entry[]>>
@@ -24,22 +25,34 @@ const EntryForm = (props: EntriesType) => {
   const [visibility, setVisibility] = useState(visibilityOptions[0].value)
   const [weather, setWeather] = useState(weatherOptions[0].value)
   const [comment, setComment] = useState("")
+  const [errorMessage, setErrorMessage] = useState("")
+
   const submitEntry = async (event: React.SyntheticEvent) => {
     event.preventDefault()
     const id = Math.floor(Math.random() * 1000000)
-    const entry: Entry = {
-      id,
-      date,
-      visibility,
-      weather,
-      comment,
+
+    if (date === "") {
+      setErrorMessage("Please enter a date...")
+    } else {
+      const entry: Entry = {
+        id,
+        date,
+        visibility,
+        weather,
+        comment,
+      }
+      const newEntry: Entry | string = await diaryService.createDiary(entry)
+      if (typeof newEntry === "string") {
+        setErrorMessage(newEntry)
+      } else {
+        props.setEntries((prev) => prev.concat(newEntry))
+      }
     }
-    const newEntry: Entry = await diaryService.createDiary(entry)
-    props.setEntries((prev) => prev.concat(newEntry))
   }
   return (
     <div>
       <h2>Add New Entry</h2>
+      <Error message={errorMessage} setMessage={setErrorMessage} />
       <form onSubmit={submitEntry}>
         <div>
           <label htmlFor="date">date </label>

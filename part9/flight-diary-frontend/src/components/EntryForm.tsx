@@ -17,6 +17,8 @@ const weatherOptions = Object.values(Weather).map((w) => ({
   label: `weather - ${w}`,
 }))
 
+// Exercise 9.18: Already done
+
 const EntryForm = (props: EntriesType) => {
   const [date, setDate] = useState("")
   const [visibility, setVisibility] = useState(visibilityOptions[0].value)

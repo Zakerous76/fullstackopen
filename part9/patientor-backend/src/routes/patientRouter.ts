@@ -10,6 +10,7 @@ import {
   createNewPatient,
   getNonSensitivePatient,
   getPatient,
+  getSensitivePatient,
 } from "../services/patientService"
 import z from "zod"
 
@@ -17,6 +18,10 @@ const patientRouter = express.Router()
 
 patientRouter.get("/", (_req, res: Response<NonSensitivePatient[]>) => {
   return res.send(getNonSensitivePatient())
+})
+
+patientRouter.get("/sensitive", (_req, res: Response<Patient[]>) => {
+  return res.send(getSensitivePatient())
 })
 
 patientRouter.get(

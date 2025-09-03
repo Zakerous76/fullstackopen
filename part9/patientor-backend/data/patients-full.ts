@@ -1,4 +1,4 @@
-import { Patient, gender as Gender } from "../src/types"
+import { Patient, gender as Gender, NewPatientSchema } from "../src/types"
 
 const patients: Patient[] = [
   {
@@ -112,4 +112,10 @@ const patients: Patient[] = [
   },
 ]
 
-export default patients
+const patientsData: Patient[] = patients.map((obj) => {
+  const object = NewPatientSchema.parse(obj) as unknown as Patient
+  object.id = obj.id
+  return object
+})
+
+export default patientsData

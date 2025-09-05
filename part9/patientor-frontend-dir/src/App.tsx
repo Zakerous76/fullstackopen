@@ -9,6 +9,7 @@ import { Patient } from "./types"
 import patientService from "./services/patients"
 import PatientListPage from "./components/PatientListPage"
 import PatientPage from "./components/PatientPage"
+import diagnosis from "./services/diagnosis"
 
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([])
@@ -19,6 +20,7 @@ const App = () => {
 
     const fetchPatientList = async () => {
       const patients = await patientService.getAllSensitive()
+      await diagnosis.initializeCache()
       setPatients(patients)
     }
     void fetchPatientList()

@@ -112,10 +112,10 @@ const patients: Patient[] = [
   },
 ]
 
-const patientsData: Patient[] = patients.map((obj) => {
+const patientsDataFull: Patient[] = patients.map((obj) => {
   const object = NewPatientSchema.parse(obj) as unknown as Patient
   object.id = obj.id
   return object
 })
 
-export default patientsData
+export default patientsDataFull

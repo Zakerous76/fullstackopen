@@ -68,13 +68,55 @@ export type NonSensitivePatient = Omit<Patient, "ssn" | "entries">
 
 export type PatientResponse = Patient | { error: string }
 
+const BaseEntrySchema = z.object({
+  id: z.string(),
+  description: z.string(),
+  date: z.string().date(),
+  specialist: z.string(),
+  diagnosisCodes: z.array(z.string()).optional(),
+})
+
+const HealthCheckEntrySchema = BaseEntrySchema.extend({
+  type: z.literal("HealthCheck"),
+  healthCheckRating: z.enum(HealthCheckRating),
+})
+
+// OccupationalHealthcareEntry schema
+const OccupationalHealthcareEntrySchema = BaseEntrySchema.extend({
+  type: z.literal("OccupationalHealthcare"),
+  employerName: z.string().optional(),
+  sickLeave: z
+    .object({
+      startDate: z.string().date(),
+      endDate: z.string().date(),
+    })
+    .optional(),
+})
+
+// HospitalEntry schema
+const HospitalEntrySchema = BaseEntrySchema.extend({
+  type: z.literal("Hospital"),
+  discharge: z
+    .object({
+      date: z.string().date(),
+      criteria: z.string(),
+    })
+    .optional(),
+})
+
+// Union of entries
+const EntrySchema = z.union([
+  HospitalEntrySchema,
+  HealthCheckEntrySchema,
+  OccupationalHealthcareEntrySchema,
+])
 export const NewPatientSchema = z.object({
   name: z.string(),
   dateOfBirth: z.string().date(),
   ssn: z.string(),
   gender: z.enum(gender),
   occupation: z.string(),
-  entries: z.array(z.object({ text: z.string() })).default([]),
+  entries: z.array(EntrySchema),
 })
 
 export type NewPatientEntry = z.infer<typeof NewPatientSchema>

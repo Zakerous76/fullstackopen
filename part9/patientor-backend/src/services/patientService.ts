@@ -1,23 +1,26 @@
 import { NewPatientEntry, NonSensitivePatient, Patient } from "../types"
-import patientsData from "../../data/patients"
+import patientsDataFull from "../../data/patients-full"
 import { generateId } from "../utils"
 
 export const getNonSensitivePatient = (): NonSensitivePatient[] => {
-  return patientsData.map(({ id, name, dateOfBirth, gender, occupation }) => ({
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    occupation,
-  }))
+  return patientsDataFull.map(
+    ({ id, name, dateOfBirth, gender, occupation, entries }) => ({
+      id,
+      name,
+      dateOfBirth,
+      gender,
+      occupation,
+      entries,
+    })
+  )
 }
 
 export const getSensitivePatient = (): Patient[] => {
-  return patientsData
+  return patientsDataFull
 }
 
 export const getPatient = (id: string): Patient | undefined => {
-  return patientsData.find((patient) => patient.id === id)
+  return patientsDataFull.find((patient) => patient.id === id)
 }
 
 export const createNewPatient = (newPatientEntry: NewPatientEntry): Patient => {

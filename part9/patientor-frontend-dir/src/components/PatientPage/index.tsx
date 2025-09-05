@@ -10,6 +10,8 @@ import {
 } from "@mui/icons-material"
 import diagnosisService from "../../services/diagnosis"
 import WorkIcon from "@mui/icons-material/Work"
+import AddEntryForm from "./AddEntryForm"
+import { useState } from "react"
 
 interface PatientProps {
   patient: Patient | undefined
@@ -113,29 +115,33 @@ const EntryDetails = ({ entry }: { entry: Entry }) => {
 }
 
 const PatientPage = ({ patient }: PatientProps) => {
-  if (!patient) return null
+  const [patientDisplay, setPatientDisplay] = useState(patient)
+  if (!patientDisplay) return null
 
   return (
     <Box>
       <Box>
         <Typography component="h2" variant="h4" fontWeight={600} py={2}>
-          {patient.name}{" "}
-          {patient.gender === Gender.Male ? (
+          {patientDisplay.name}{" "}
+          {patientDisplay.gender === Gender.Male ? (
             <Male sx={{ fontSize: "30px" }} />
-          ) : patient.gender === Gender.Female ? (
+          ) : patientDisplay.gender === Gender.Female ? (
             <Female sx={{ fontSize: "30px" }} />
           ) : (
             <Lightbulb sx={{ fontSize: "30px" }} />
           )}
         </Typography>
-        <Typography variant="body1">ssh: {patient.ssn}</Typography>
+        <Typography variant="body1">ssh: {patientDisplay.ssn}</Typography>
         <Typography variant="body1">
-          occupation: {patient.occupation}
+          occupation: {patientDisplay.occupation}
         </Typography>
       </Box>
-
+      <AddEntryForm
+        patientID={patientDisplay.id}
+        setPatient={setPatientDisplay}
+      />
       <Box>
-        {patient.entries.length > 0 && (
+        {patientDisplay.entries.length > 0 && (
           <Typography
             component="h3"
             variant="h5"
@@ -146,7 +152,7 @@ const PatientPage = ({ patient }: PatientProps) => {
             Entries
           </Typography>
         )}
-        {patient.entries.map((entry) => (
+        {patientDisplay.entries.map((entry) => (
           <EntryDetails key={entry.id} entry={entry} />
         ))}
       </Box>

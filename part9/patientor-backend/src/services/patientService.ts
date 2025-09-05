@@ -1,4 +1,10 @@
-import { NewPatientEntry, NonSensitivePatient, Patient } from "../types"
+import {
+  Entry,
+  EntrySchema,
+  NewPatientEntry,
+  NonSensitivePatient,
+  Patient,
+} from "../types"
 import patientsDataFull from "../../data/patients-full"
 import { generateId } from "../utils"
 
@@ -27,4 +33,15 @@ export const createNewPatient = (newPatientEntry: NewPatientEntry): Patient => {
   const id = generateId()
   const newPatient: Patient = { id, ...newPatientEntry }
   return newPatient
+}
+
+export const addEntry = (entry: object, patientID: string) => {
+  entry = { id: generateId(), ...entry }
+  const newEntry: Entry = EntrySchema.parse(entry) as Entry
+  patientsDataFull.forEach((p) => {
+    if (p.id === patientID) {
+      p.entries.push(newEntry)
+    }
+  })
+  return newEntry
 }

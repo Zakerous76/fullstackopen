@@ -5,8 +5,10 @@ import {
   NonSensitivePatient,
   Patient,
   PatientResponse,
+  Entry,
 } from "../types"
 import {
+  addEntry,
   createNewPatient,
   getNonSensitivePatient,
   getPatient,
@@ -33,6 +35,29 @@ patientRouter.get(
       return res.status(200).send(patient)
     }
     return res.status(400).json({ error: "please provide an id" })
+  }
+)
+
+patientRouter.post(
+  "/:id/entries",
+  (req, res: Response<Entry | object | undefined>) => {
+    const patientID = req.params.id
+    if (patientID && getPatient(patientID)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const body = req.body
+      if (body && typeof body === "object" && "diagnosisCodes" in body) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        const newEntry: Entry = addEntry(body, patientID)
+        return res.status(201).send(newEntry)
+      } else {
+        return res
+          .status(400)
+          .json({ error: "please provide the correct entry" })
+      }
+    }
+    return res
+      .status(400)
+      .json({ error: "please provide a correct patient id" })
   }
 )
 

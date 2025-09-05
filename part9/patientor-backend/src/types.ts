@@ -81,7 +81,6 @@ const HealthCheckEntrySchema = BaseEntrySchema.extend({
   healthCheckRating: z.enum(HealthCheckRating),
 })
 
-// OccupationalHealthcareEntry schema
 const OccupationalHealthcareEntrySchema = BaseEntrySchema.extend({
   type: z.literal("OccupationalHealthcare"),
   employerName: z.string().optional(),
@@ -93,7 +92,6 @@ const OccupationalHealthcareEntrySchema = BaseEntrySchema.extend({
     .optional(),
 })
 
-// HospitalEntry schema
 const HospitalEntrySchema = BaseEntrySchema.extend({
   type: z.literal("Hospital"),
   discharge: z
@@ -104,12 +102,12 @@ const HospitalEntrySchema = BaseEntrySchema.extend({
     .optional(),
 })
 
-// Union of entries
-const EntrySchema = z.union([
+export const EntrySchema = z.union([
   HospitalEntrySchema,
   HealthCheckEntrySchema,
   OccupationalHealthcareEntrySchema,
 ])
+
 export const NewPatientSchema = z.object({
   name: z.string(),
   dateOfBirth: z.string().date(),

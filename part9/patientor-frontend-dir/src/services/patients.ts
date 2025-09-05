@@ -23,12 +23,19 @@ const create = async (object: PatientFormValues) => {
   return data
 }
 
-const addEntry = async (entry: EntryFormValues, patientId: string) => {
-  const { data } = await axios.post<Entry>(
-    `${apiBaseUrl}/patients/${patientId}/entries`,
-    entry
-  )
-  return data
+const addEntry = async (
+  entry: EntryFormValues,
+  patientId: string
+): Promise<Entry | string> => {
+  try {
+    const response = await axios.post<Entry>(
+      `${apiBaseUrl}/patients/${patientId}/entries`,
+      entry
+    )
+    return response.data
+  } catch (error) {
+    return "An error occurred"
+  }
 }
 
 export default {

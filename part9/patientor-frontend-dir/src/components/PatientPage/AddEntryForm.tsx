@@ -250,7 +250,8 @@ const AddEntryForm = (props: AddEntryFormProps) => {
             label="Diagnosis Codes"
             helperText={`Valid codes: ${validCodes}`}
           ></TextField>
-
+          {/* 9.30: Patientor, step 10
+           */}
           <Box>
             <Button
               variant="contained"
